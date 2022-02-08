@@ -1,6 +1,7 @@
 package se.kth.iv1201.iv1201recruitmentapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.lookup.DataSourceLookupFailureException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -53,9 +54,10 @@ public class SecurityUserDetailService implements UserDetailsService {
         person.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
         person.setUsername(registrationDto.getUsername());
 
-        person.setRole(roleRepository.getRoleByName("applicant")
-                .orElseThrow(Exception::new) //TODO throw better exception
-        );
+        //person.setRole(new Role("applicant"));
+        person.setRole(roleRepository.getRoleById(2).orElseThrow(
+                () -> new DataSourceLookupFailureException("Could not find role in database")
+        ));
 
         personRepository.save(person);
     }

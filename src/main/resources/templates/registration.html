@@ -10,8 +10,13 @@
 
     <div class="container">
         <div class="col-md-6 col-md-offset-3">
+
             <h1>Registration</h1>
             <form th:action="@{/registration}" th:object="${user}" method="post">
+
+                <div th:if="${param.regError}">
+                    <div class="alert alert-danger">An error occurred</div>
+                </div>
                 <div>
                     <label for="firstName" class="form-label">First name</label>
                     <input id="firstName" class="form-control" type="text" th:field="*{firstName}" />
