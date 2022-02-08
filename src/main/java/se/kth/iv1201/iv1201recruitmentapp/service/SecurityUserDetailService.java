@@ -50,10 +50,10 @@ public class SecurityUserDetailService implements UserDetailsService {
         person.setSurname(registrationDto.getLastName());
         person.setPnr(registrationDto.getPersonNumber());
         person.setEmail(registrationDto.getEmail());
-        person.setPassword(passwordEncoder.encode(registrationDto.getPassword())); //TODO hash password
+        person.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
         person.setUsername(registrationDto.getUsername());
 
-        person.setRole(roleRepository.getRoleByName(registrationDto.getRole())
+        person.setRole(roleRepository.getRoleByName("applicant")
                 .orElseThrow(Exception::new) //TODO throw better exception
         );
 

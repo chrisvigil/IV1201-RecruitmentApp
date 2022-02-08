@@ -33,7 +33,6 @@ public class UserRegistrationController {
     @PostMapping
     public String registerUserAccount(@ModelAttribute("user") UserRegistrationDto userDto){
         try {
-            userDto.setRole("applicant");
             userService.createUser(userDto);
             return "redirect:login";
         } catch (Exception ex) {

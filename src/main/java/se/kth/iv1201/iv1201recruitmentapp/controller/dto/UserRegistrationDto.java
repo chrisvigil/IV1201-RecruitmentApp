@@ -6,7 +6,6 @@ public class UserRegistrationDto {
     private String password;
     private String personNumber;
     private String email;
-    private String role;
     private String username;
 
     public String getFirstName() {
@@ -47,14 +46,6 @@ public class UserRegistrationDto {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
     }
 
     public String getUsername() {
