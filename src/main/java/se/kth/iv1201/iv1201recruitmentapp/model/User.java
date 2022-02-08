@@ -11,27 +11,37 @@ public class User {
     @Column(name="person_id")
     private long personId;
 
+    @Column(name="name")
     private String name;
+
+    @Column(name="surname")
     private String surname;
+
+    @Column(name="pnr")
     private String pnr;
+
+    @Column(name="email")
     private String email;
+
+    @Column(name="password")
     private String password;
 
-    @Column(name="role_id")
-    private int roleId;
+    @ManyToOne
+    @JoinColumn(name="role_id")
+    private Role role;
 
     private String username;
 
     public User() {}
 
-    public User(long personId, String name, String surname, String pnr, String email, String password, int roleId, String username) {
+    public User(long personId, String name, String surname, String pnr, String email, String password, Role role, String username) {
         this.personId = personId;
         this.name = name;
         this.surname = surname;
         this.pnr = pnr;
         this.email = email;
         this.password = password;
-        this.roleId = roleId;
+        this.role = role;
         this.username = username;
     }
 
@@ -83,12 +93,12 @@ public class User {
         this.password = password;
     }
 
-    public int getRoleId() {
-        return roleId;
+    public Role getRoleId() {
+        return role;
     }
 
-    public void setRoleId(int roleId) {
-        this.roleId = roleId;
+    public void setRoleId(Role role) {
+        this.role = role;
     }
 
     public String getUsername() {
