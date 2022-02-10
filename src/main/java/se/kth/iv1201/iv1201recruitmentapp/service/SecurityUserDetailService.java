@@ -18,6 +18,9 @@ import se.kth.iv1201.iv1201recruitmentapp.repository.RoleRepository;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Service for storing and retrieving user details.
+ */
 @Service
 public class SecurityUserDetailService implements UserDetailsService {
     @Autowired
@@ -29,6 +32,13 @@ public class SecurityUserDetailService implements UserDetailsService {
     @Autowired
     private Argon2PasswordEncoder passwordEncoder;
 
+    /**
+     * Gets a Spring Security User by username from the person repository.
+     *
+     * @param username The username.
+     * @return The user.
+     * @throws UsernameNotFoundException If the user was not found.
+     */
     @Override
     public UserDetails loadUserByUsername(String username)
         throws UsernameNotFoundException {
@@ -45,7 +55,12 @@ public class SecurityUserDetailService implements UserDetailsService {
         return List.of(role::getName);
     }
 
-    public void createUser(UserRegistrationDto registrationDto) throws Exception{
+    /**
+     * Creates a user from the user registration dto and saves it to the database.
+     *
+     * @param registrationDto The user registration dto.
+     */
+    public void createUser(UserRegistrationDto registrationDto) {
         Person person = new Person();
         person.setName(registrationDto.getFirstName());
         person.setSurname(registrationDto.getLastName());
@@ -54,7 +69,7 @@ public class SecurityUserDetailService implements UserDetailsService {
         person.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
         person.setUsername(registrationDto.getUsername());
 
-        //person.setRole(new Role("applicant"));
+        // RoleId 2 corresponds to "applicant"
         person.setRole(roleRepository.getRoleById(2).orElseThrow(
                 () -> new DataSourceLookupFailureException("Could not find role in database")
         ));

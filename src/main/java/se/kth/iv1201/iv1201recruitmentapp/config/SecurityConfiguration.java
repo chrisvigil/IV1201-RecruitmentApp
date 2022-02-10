@@ -8,13 +8,28 @@ import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+/**
+ * Web Security configuration class.
+ */
 @Configuration
-public class SecurityConfiguration  extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    /**
+     * Sets the password encoder for the application.
+     *
+     * @return The password encoder.
+     */
     @Bean
     public Argon2PasswordEncoder passwordEncoder(){
         return new Argon2PasswordEncoder();
     }
 
+    /**
+     * Configuration parameters for Spring Security.
+     *
+     * @param http The Spring Security configuration object.
+     * @throws Exception For invalid configurations.
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
