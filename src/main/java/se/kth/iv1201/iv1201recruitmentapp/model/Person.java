@@ -2,6 +2,10 @@ package se.kth.iv1201.iv1201recruitmentapp.model;
 
 import javax.persistence.*;
 
+/**
+ * The person object model as represented by the
+ * corresponding database table.
+ */
 @Entity
 @Table(name = "person")
 public class Person {
