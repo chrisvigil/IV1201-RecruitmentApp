@@ -1,8 +1,12 @@
 package se.kth.iv1201.iv1201recruitmentapp.controller;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.Collection;
 
 /**
  * The controller for simple Get requests.
@@ -11,13 +15,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class MainController {
 
     /**
-     * Get request for the root page.
+     * Get request for the root page by authority.
      *
      * @return The starting page url.
      */
     @GetMapping("/")
-    public String root(){
-        return "index";
+    public String root(Authentication authentication) {
+        var authorities =  authentication.getAuthorities();
+        for (GrantedAuthority grantedAuthority : authorities) {
+            String authorityName = grantedAuthority.getAuthority();
+            if (authorityName.equals("recruiter"))
+                return "redirect:/recruiter/";
+        }
+        return "redirect:/applicant/";
     }
 
     /**
