@@ -30,4 +30,24 @@ public class MainController {
     public String login(Model model) {
         return "login";
     }
+
+    /**
+     * Get request for the applicant index page
+     * @param model Model object used by the login page
+     * @return The applicants index page
+     */
+    @GetMapping("/applicant/")
+    public String applicantIndex(Model model) {
+        return "/applicant/index";
+    }
+
+    /**
+     * Get request for the recruiters index page
+     * @param model Model object used by the login page
+     * @return The applicant index page
+     */
+    @GetMapping("/recruiter/")
+    public String recruiterIndex(Model model) {
+        return "/recruiter/index";
+    }
 }
