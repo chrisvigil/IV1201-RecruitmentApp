@@ -3,7 +3,6 @@ package se.kth.iv1201.iv1201recruitmentapp.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.lookup.DataSourceLookupFailureException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -75,5 +74,23 @@ public class SecurityUserDetailService implements UserDetailsService {
         ));
 
         personRepository.save(person);
+    }
+
+    /**
+     * Checks if email is registered in database
+     * @param email the email
+     * @return true if email is in database
+     */
+    public boolean isEmailRegistered(String email){
+        return personRepository.findByEmail(email).isPresent();
+    }
+
+    /**
+     * Checks if username is registered in database
+     * @param username the username
+     * @return true is username is in database
+     */
+    public boolean usernameRegistered(String username){
+        return personRepository.findByUsername(username).isPresent();
     }
 }
