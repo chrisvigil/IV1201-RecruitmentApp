@@ -16,6 +16,8 @@ import se.kth.iv1201.iv1201recruitmentapp.repository.RoleRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Service for storing and retrieving user details.
@@ -32,19 +34,35 @@ public class SecurityUserDetailService implements UserDetailsService {
     private Argon2PasswordEncoder passwordEncoder;
 
     /**
-     * Gets a Spring Security User by username from the person repository.
+     * Gets a Spring Security User by username or email from the person repository.
      *
-     * @param username The username.
+     * @param username The username or email.
      * @return The user.
      * @throws UsernameNotFoundException If the user was not found.
      */
     @Override
     public UserDetails loadUserByUsername(String username)
         throws UsernameNotFoundException {
-        Person person = personRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("No such user"));
+
+        String regex ="^([A-Za-z0-9+_.-]+)@([a-zA-Z0-9.-]+)([a-zA-Z]{2,6})$";
+        Pattern emailPattern = Pattern.compile(regex);
+        Matcher matcher = emailPattern.matcher(username);
+        Person person;
+
+        if (matcher.matches()) {
+            person = personRepository.findByEmail(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("No such user"));
+        }
+        else {
+            person = personRepository.findByUsername(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("No such user"));
+        }
+        return createSpringUser(username, person);
+    }
+
+    private org.springframework.security.core.userdetails.User createSpringUser(String username, Person person) {
         return new org.springframework.security.core.userdetails.User(
-                person.getUsername(),
+                username,
                 person.getPassword(),
                 mapRoleToAuthority(person.getRole())
         );
