@@ -2,6 +2,7 @@ package se.kth.iv1201.iv1201recruitmentapp.controller.dto;
 
 import se.kth.iv1201.iv1201recruitmentapp.constraint.CustomFieldMatchConstraint;
 import se.kth.iv1201.iv1201recruitmentapp.constraint.CustomUniqueEmailConstraint;
+import se.kth.iv1201.iv1201recruitmentapp.constraint.CustomUniquePersonnumberConstraint;
 import se.kth.iv1201.iv1201recruitmentapp.constraint.CustomUniqueUsernameConstraint;
 
 import javax.validation.constraints.Email;
@@ -42,6 +43,7 @@ public class UserRegistrationDto {
 
     @NotBlank(message = "{userregistrationdto.personnumber.notblank}")
     @Pattern(regexp = "^\\d{8}-\\d{4}$",message = "{userregistrationdto.personnumber.pattern}")
+    @CustomUniquePersonnumberConstraint(message="{userregistrationdto.personnumber.alreadyregisterd}")
     private String personNumber;
 
     @NotBlank(message = "{userregistrationdto.email.notblank}")

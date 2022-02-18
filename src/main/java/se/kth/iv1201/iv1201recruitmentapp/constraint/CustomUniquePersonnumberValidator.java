@@ -7,9 +7,9 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 /**
- * Validator for {@link CustomUniqueUsernameConstraint}
+ * Validator for {@link CustomUniquePersonnumberConstraint}
  */
-public class CustomUniqueUsernameValidator implements ConstraintValidator<CustomUniqueUsernameConstraint, String> {
+public class CustomUniquePersonnumberValidator implements ConstraintValidator<CustomUniquePersonnumberConstraint, String> {
     @Autowired
     private SecurityUserDetailService userService;
 
@@ -20,18 +20,18 @@ public class CustomUniqueUsernameValidator implements ConstraintValidator<Custom
      * @param constraint validation constraint
      */
     @Override
-    public void initialize(CustomUniqueUsernameConstraint constraint) {
+    public void initialize(CustomUniquePersonnumberConstraint constraint) {
         ConstraintValidator.super.initialize(constraint);
     }
 
     /**
      * Implementation of validation logic
-     * @param username the username to validate
+     * @param personnumber the personnumber to validate
      * @param constraintValidatorContext context in which the constraint is evaluated
-     * @return false if username is already present in the database
+     * @return false if personnumber is already present in the database
      */
     @Override
-    public boolean isValid(String username, ConstraintValidatorContext constraintValidatorContext) {
-        return !userService.isUsernameRegistered(username);
+    public boolean isValid(String personnumber, ConstraintValidatorContext constraintValidatorContext) {
+        return !userService.isPersonnumberRegistered(personnumber);
     }
 }

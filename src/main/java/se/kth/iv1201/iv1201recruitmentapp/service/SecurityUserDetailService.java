@@ -88,9 +88,18 @@ public class SecurityUserDetailService implements UserDetailsService {
     /**
      * Checks if username is registered in database
      * @param username the username
-     * @return true is username is in database
+     * @return true if username is in database
      */
-    public boolean usernameRegistered(String username){
+    public boolean isUsernameRegistered(String username){
         return personRepository.findByUsername(username).isPresent();
+    }
+
+    /**
+     * Checks if personnumber is registered in database
+     * @param personnumber the personnumber
+     * @return true if username is in database
+     */
+    public boolean isPersonnumberRegistered(String personnumber){
+        return personRepository.findByPnr(personnumber).isPresent();
     }
 }
