@@ -39,13 +39,14 @@ public interface ApplicationsRepository extends JpaRepository<Application, Integ
     /**
      * TODO search by person.name and person.surname ok?
      * Retrieves list of application objects by
-     * person first name and surname combined as name.
+     * person first name and surname.
      *
-     * @param name The first name and surname.
+     * @param firstName The first name.
+     * @param surname The surname.
      * @return The list of application objects.
      */
     @Query(value = "SELECT a.application_id, a.person_id, a.season_id, a.status FROM application AS a INNER JOIN person AS p ON a.person_id = p.person_id WHERE p.name = ?1 AND p.surname = ?2",
             nativeQuery = true)
-    List<Application> findAllByName(String name);
+    List<Application> findAllByName(String firstName, String surname);
 
 }
