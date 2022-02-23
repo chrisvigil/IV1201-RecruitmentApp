@@ -10,20 +10,8 @@
     <div th:fragment="dbConnectionError">
         <div>There was an error with the connection to the database.</div>
         <div>Please try again later.</div>
-        <div sec:authorize="hasAuthority('applicant')">
-            <div>
-                <span><a href="#" th:href="@{/applicant/}">To applicant start</a></span>
-            </div>
-        </div>
-        <div sec:authorize="hasAuthority('recruiter')">
-            <div>
-                <span><a href="#" th:href="@{/recruiter/}">To recruiter start</a></span>
-            </div>
-        </div>
-        <div sec:authorize="!isAuthenticated()">
-            <div>
-                <span><a href="#" th:href="@{/}">To start page</a></span>
-            </div>
+        <div>
+            <span><a href="#" th:href="@{/}">To start page</a></span>
         </div>
     </div>
 </body>
