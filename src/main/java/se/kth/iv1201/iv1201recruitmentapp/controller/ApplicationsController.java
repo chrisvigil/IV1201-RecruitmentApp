@@ -13,7 +13,7 @@ import se.kth.iv1201.iv1201recruitmentapp.model.Application;
 import se.kth.iv1201.iv1201recruitmentapp.service.ApplicationsService;
 
 /**
- * The controller for the applications page
+ * The controller for the applications page.
  */
 @Controller
 @RequestMapping("/recruiter/applications")
@@ -59,10 +59,10 @@ public class ApplicationsController {
     @PostMapping()
     public String showApplicationSearchResults(Model model, @ModelAttribute("applicationsRequest") ApplicationsRequestDto applicationsRequestDto) {
         try {
-            // TODO <fix>
+            // TODO <change>
             String[] searchOptions = {"time", "competence", "name"};
             model.addAttribute("searchOptions", searchOptions);
-            // TODO </fix>
+            // TODO </change>
 
             model.addAttribute("applicationsResults", applicationsService.getApplicationsSearchResults(applicationsRequestDto));
             return "/recruiter/applications";

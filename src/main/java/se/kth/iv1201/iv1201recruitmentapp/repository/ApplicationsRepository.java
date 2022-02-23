@@ -25,7 +25,6 @@ public interface ApplicationsRepository extends JpaRepository<Application, Integ
     List<Application> findAllByTime(LocalDate fromDate, LocalDate toDate);
 
     /**
-     * TODO search by competence.name ok?
      * Retrieves list of application objects by
      * competence name.
      *
@@ -37,7 +36,6 @@ public interface ApplicationsRepository extends JpaRepository<Application, Integ
     List<Application> findAllByCompetence(String competence);
 
     /**
-     * TODO search by person.name and person.surname ok?
      * Retrieves list of application objects by
      * person first name and surname.
      *

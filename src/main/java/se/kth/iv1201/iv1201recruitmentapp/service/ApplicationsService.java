@@ -20,10 +20,12 @@ public class ApplicationsService {
     private ApplicationsRepository applicationsRepository;
 
     /**
-     * TODO error handling? solved
+     * Parses the applications request dto and employs
+     * the corresponding database accesses to create and
+     * return an applications response dto.
      *
-     * @param applicationsRequestDto
-     * @return
+     * @param applicationsRequestDto The applications request dto.
+     * @return The applications response dto.
      */
     public ApplicationsResponseDto getApplicationsSearchResults(ApplicationsRequestDto applicationsRequestDto) {
         String searchType = applicationsRequestDto.getSearchType();
