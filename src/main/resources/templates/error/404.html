@@ -9,5 +9,20 @@
 <body>
     <div>404</div>
     <div>Page not found</div>
+    <div sec:authorize="hasAuthority('applicant')">
+        <div>
+            <span><a href="#" th:href="@{/applicant/}">To applicant start</a></span>
+        </div>
+    </div>
+    <div sec:authorize="hasAuthority('recruiter')">
+        <div>
+            <span><a href="#" th:href="@{/recruiter/}">To recruiter start</a></span>
+        </div>
+    </div>
+    <div sec:authorize="!isAuthenticated()">
+        <div>
+            <span><a href="#" th:href="@{/}">To start page</a></span>
+        </div>
+    </div>
 </body>
 </html>
