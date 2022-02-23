@@ -3,7 +3,6 @@ package se.kth.iv1201.iv1201recruitmentapp.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.lookup.DataSourceLookupFailureException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,6 +16,8 @@ import se.kth.iv1201.iv1201recruitmentapp.repository.RoleRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Service for storing and retrieving user details.
@@ -33,19 +34,35 @@ public class SecurityUserDetailService implements UserDetailsService {
     private Argon2PasswordEncoder passwordEncoder;
 
     /**
-     * Gets a Spring Security User by username from the person repository.
+     * Gets a Spring Security User by username or email from the person repository.
      *
-     * @param username The username.
+     * @param username The username or email.
      * @return The user.
      * @throws UsernameNotFoundException If the user was not found.
      */
     @Override
     public UserDetails loadUserByUsername(String username)
         throws UsernameNotFoundException {
-        Person person = personRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("No such user"));
+
+        String regex ="^([A-Za-z0-9+_.-]+)@([a-zA-Z0-9.-]+)([a-zA-Z]{2,6})$";
+        Pattern emailPattern = Pattern.compile(regex);
+        Matcher matcher = emailPattern.matcher(username);
+        Person person;
+
+        if (matcher.matches()) {
+            person = personRepository.findByEmail(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("No such user"));
+        }
+        else {
+            person = personRepository.findByUsername(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("No such user"));
+        }
+        return createSpringUser(username, person);
+    }
+
+    private org.springframework.security.core.userdetails.User createSpringUser(String username, Person person) {
         return new org.springframework.security.core.userdetails.User(
-                person.getUsername(),
+                username,
                 person.getPassword(),
                 mapRoleToAuthority(person.getRole())
         );
@@ -75,5 +92,32 @@ public class SecurityUserDetailService implements UserDetailsService {
         ));
 
         personRepository.save(person);
+    }
+
+    /**
+     * Checks if email is registered in database
+     * @param email the email
+     * @return true if email is in database
+     */
+    public boolean isEmailRegistered(String email){
+        return personRepository.findByEmail(email).isPresent();
+    }
+
+    /**
+     * Checks if username is registered in database
+     * @param username the username
+     * @return true if username is in database
+     */
+    public boolean isUsernameRegistered(String username){
+        return personRepository.findByUsername(username).isPresent();
+    }
+
+    /**
+     * Checks if personnumber is registered in database
+     * @param personnumber the personnumber
+     * @return true if username is in database
+     */
+    public boolean isPersonnumberRegistered(String personnumber){
+        return personRepository.findByPnr(personnumber).isPresent();
     }
 }

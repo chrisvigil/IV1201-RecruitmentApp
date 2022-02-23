@@ -26,4 +26,12 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
      *          otherwise contains null.
      */
     Optional<Person> findByEmail(String email);
+
+    /**
+     * Gets the person from database by personnumber
+     * @param pnr The personnumber
+     * @return Returns optional, contains type person on success
+     *          otherwise contains null.
+     */
+    Optional<Person> findByPnr(String pnr);
 }
