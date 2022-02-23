@@ -41,16 +41,16 @@ public class ApplicationsController {
      */
     @GetMapping()
     public String showApplicationSearchForm(Model model) {
-        // TODO populate dropdown for search criteria
-
-        // TODO remove me... please
-        model.addAttribute("applicationsResults", null);
+        String[] searchOptions = {"time", "competence", "name"};
+        model.addAttribute("searchOptions", searchOptions);
         return "/recruiter/applications";
     }
 
     /**
      * Post request for the recruiter applications search
-     * page. Will display the search results if any.
+     * page. Adds the applications search results as a model
+     * attribute. Will display the search results on the
+     * recruiter applications page if any.
      *
      * @param model Model object used by the applications page.
      * @param applicationsRequestDto The applications request dto.
@@ -59,16 +59,14 @@ public class ApplicationsController {
     @PostMapping()
     public String showApplicationSearchResults(Model model, @ModelAttribute("applicationsRequest") ApplicationsRequestDto applicationsRequestDto) {
         try {
-            // TODO applicationService addAttribute applicationSearchResults
+            // TODO <fix>
+            String[] searchOptions = {"time", "competence", "name"};
+            model.addAttribute("searchOptions", searchOptions);
+            // TODO </fix>
+
             model.addAttribute("applicationsResults", applicationsService.getApplicationsSearchResults(applicationsRequestDto));
-            // <DEBUG>
-            ApplicationsResponseDto test1 = (ApplicationsResponseDto) model.getAttribute("applicationsResults");
-            java.util.List<Application> test2 = test1.getApplications();
-            for (Application t : test2)
-                System.out.println(">>> " + t.getPerson().getName() + " " + t.getPerson().getSurname());
-            // </DEBUG>
             return "/recruiter/applications";
-        } catch (Exception ex) { // TODO error handling?
+        } catch (Exception ex) {
             return "/recruiter/applications";
         }
     }

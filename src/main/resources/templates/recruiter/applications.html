@@ -7,28 +7,34 @@
     <title>Applications</title>
 </head>
 <body>
-    <div class="container">
+    <div class="container pt-4">
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
                 <h1>Applications</h1>
-                <form th:action="@{/recruiter/applications}" th:object="${applicationsRequest}" method="post">
-                    <div>
-                        <!-- TODO make this into a multiple choice dropdown -->
-                        <label for="searchType" class="form-label">Search Type</label>
-                        <input id="searchType" class="form-control" type="text" th:field="*{searchType}" />
+                <form th:action="@{/recruiter/applications}" th:object="${applicationsRequest}" class="mb-5" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Search Type</label>
+                        <select th:field="*{searchType}" class="form-select">
+                            <option th:each="options: ${searchOptions}"
+                                    th:value="${options}"
+                                    th:text="${options}">
+                            </option>
+                        </select>
                     </div>
-                    <div>
+                    <div class="mb-3">
                         <label for="searchText" class="form-label">Search Text</label>
                         <input id="searchText" class="form-control" type="text" th:field="*{searchText}" />
                     </div>
-                    <div>
+                    <div class="mb-3">
                         <button type="submit" class="btn btn-primary">Search</button>
                     </div>
                 </form>
-                <table th:if="${not applicationsResults == null}">
-                    <tr th:each="results: ${applicationsResults.getApplications()}">
-                        <td th:text="${results.getPerson().getName()}" />
-                        <td th:text="${results.getPerson().getSurname()}" />
+                <table th:if="${applicationsResults}">
+                    <h2>Results</h2>
+                    <tr th:each="results: ${applicationsResults.applications}">
+                        <td th:text="${results.person.name}" />
+                        <td th:text="${results.person.surname}" />
+                        <td th:text="${results.status}" />
                     </tr>
                 </table>
             </div>

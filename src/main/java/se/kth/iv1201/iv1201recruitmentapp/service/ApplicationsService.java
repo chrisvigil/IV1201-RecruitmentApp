@@ -20,7 +20,7 @@ public class ApplicationsService {
     private ApplicationsRepository applicationsRepository;
 
     /**
-     * TODO error handling?
+     * TODO error handling? solved
      *
      * @param applicationsRequestDto
      * @return
