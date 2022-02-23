@@ -58,4 +58,9 @@ public class MainController {
     public String recruiterIndex(Model model) {
         return "/recruiter/index";
     }
+
+
+    //TODO
+    @GetMapping("/error/dbConnectionError")
+    public String dbError(){ return "/error/dbConnectionError";}
 }
