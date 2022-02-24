@@ -7,6 +7,7 @@
     <title>Welcome</title>
 </head>
 <body>
+<div th:replace="fragments/header :: header"></div>
 <div class="container pt-4">
     <h2>Login success</h2>
     <a class="btn btn-danger" href="#" th:href="@{/logout}" role="button">Logout</a>

@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
@@ -24,6 +25,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     /**
+     * Sets the custom Authentication handler to use on authentication failure.
+     *
+     * @return The Authentication failure handler.
+     */
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler(){
+        return new CustomAuthenticationFailureHandler();
+    }
+
+    /**
      * Configuration parameters for Spring Security.
      *
      * @param http The Spring Security configuration object.
@@ -33,25 +44,28 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/applicant/**").hasAuthority("applicant")
-                .antMatchers("/recruiter/**").hasAuthority("recruiter")
-                .antMatchers(
-                        "/registration**",
-                        "/js/**",
-                        "/css/**",
-                        "/img/**",
-                        "/webjars/**").permitAll()
-                .anyRequest().authenticated()
+                    .antMatchers("/applicant/**").hasAuthority("applicant")
+                    .antMatchers("/recruiter/**").hasAuthority("recruiter")
+                    .antMatchers(
+                            "/registration**",
+                            "/js/**",
+                            "/css/**",
+                            "/img/**",
+                            "/webjars/**",
+                            "/error/**",
+                            "/login**").permitAll()
+                    .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login")
-                .permitAll()
+                    .loginPage("/login")
+                    .failureHandler(authenticationFailureHandler())
+                    .permitAll()
                 .and()
                 .logout()
-                .invalidateHttpSession(true)
-                .clearAuthentication(true)
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login?logout")
-                .permitAll();
+                    .invalidateHttpSession(true)
+                    .clearAuthentication(true)
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                    .logoutSuccessUrl("/login?logout")
+                    .permitAll();
     }
 }
