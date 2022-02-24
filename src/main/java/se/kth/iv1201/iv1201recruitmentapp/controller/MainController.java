@@ -62,22 +62,4 @@ public class MainController {
         return "/recruiter/index";
     }
 
-
-    /**
-     * Mapping for database connection error page needed for Authentication error handling
-     *
-     * @return The error page.
-     */
-    @GetMapping("/error/dbConnectionError")
-    public String dbError () { return "/error/dbConnectionError";}
-
-    /**
-     * Test controller to show that if error is thrown the right error handler will take care of it.
-     * @return nothing, an exception is thrown.
-     */
-    @GetMapping("/error/test")
-    public String er () {
-        SQLException test = new SQLException("sql test");
-        throw new JDBCConnectionException("test", test);
-    }
 }

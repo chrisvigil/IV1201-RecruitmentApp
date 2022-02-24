@@ -7,7 +7,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import se.kth.iv1201.iv1201recruitmentapp.controller.CustomAuthenticationFailureHandler;
 
 /**
  * Web Security configuration class.

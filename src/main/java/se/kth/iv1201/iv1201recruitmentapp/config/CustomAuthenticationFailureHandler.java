@@ -1,4 +1,4 @@
-package se.kth.iv1201.iv1201recruitmentapp.controller;
+package se.kth.iv1201.iv1201recruitmentapp.config;
 
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
