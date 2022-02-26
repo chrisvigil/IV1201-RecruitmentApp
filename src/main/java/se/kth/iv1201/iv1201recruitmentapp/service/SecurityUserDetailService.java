@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.UserRegistrationDto;
 import se.kth.iv1201.iv1201recruitmentapp.model.Person;
 import se.kth.iv1201.iv1201recruitmentapp.model.Role;
@@ -20,8 +22,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * <p>
  * Service for storing and retrieving user details.
+ * </p>
+ *
+ *<p>
+ * Class is transactional, transactions start on method call and ends when
+ * method returns. Transactions rollback if an exception is thrown otherwise
+ * transaction is committed. A new transaction is created for eatch methos call.
+ * </p>
  */
+@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
 @Service
 public class SecurityUserDetailService implements UserDetailsService {
     @Autowired
@@ -115,7 +126,7 @@ public class SecurityUserDetailService implements UserDetailsService {
     /**
      * Checks if personnumber is registered in database
      * @param personnumber the personnumber
-     * @return true if username is in database
+     * @return true if personnumber is in database
      */
     public boolean isPersonnumberRegistered(String personnumber){
         return personRepository.findByPnr(personnumber).isPresent();
