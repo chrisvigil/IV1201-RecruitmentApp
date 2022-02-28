@@ -7,6 +7,10 @@ import java.lang.annotation.*;
 /**
  * Validates if two given fields match
  * Validation fails if fields do not match
+ *
+ *<p>
+ * Original <a href=https://www.javaguides.net/2019/08/registration-login-example-using-springboot-spring-data-jpa-hibernate-mysql-thymeleaf.html>source</a>
+ * </p>
  */
 @Documented
 @Constraint(validatedBy = CustomFieldMatchValidator.class)

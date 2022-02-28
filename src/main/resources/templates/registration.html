@@ -3,75 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}"/>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.min.js}"></script>
-    <title>Registration</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.bundle.min.js}"></script>
+    <title th:text="#{registration.title}">Registration</title>
 </head>
 <body>
+    <div th:replace="fragments/header :: header"></div>
 
     <div class="container pt-4">
         <div class="col-md-6 col-md-offset-3">
 
-            <h1>Registration</h1>
+            <h1 th:text="#{registration.title}">Registration</h1>
             <form th:action="@{/registration}" th:object="${user}" method="post">
                 <div th:if="${param.regError}">
-                    <div class="alert alert-danger">An error occurred</div>
+                    <div class="alert alert-danger" th:text="#{registration.generioerror}">An error occurred</div>
                 </div>
                 <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}" th:each="error: ${#fields.errors('global')}" th:text="${error}">Error</div>
                 <div class="mb-3">
-                    <label for="firstName" class="form-label">First name</label>
+                    <label for="firstName" class="form-label" th:text="#{registration.firstname}">First name</label>
                     <input id="firstName" class="form-control" type="text" th:field="*{firstName}"
                            th:classappend="${#fields.hasErrors('firstName')}? 'is-invalid'"/>
                     <div th:if="${#fields.hasErrors('firstName')}" class="invalid-feedback" th:errors="*{firstName}">Error</div>
                 </div>
                 <div class="mb-3">
-                    <label for="lastName" class="form-label">Last name</label>
+                    <label for="lastName" class="form-label" th:text="#{registration.lastname}">Last name</label>
                     <input id="lastName" class="form-control" type="text" th:field="*{lastName}"
                            th:classappend="${#fields.hasErrors('lastName')}? 'is-invalid'"/>
                     <div th:if="${#fields.hasErrors('lastName')}" class="invalid-feedback" th:errors="*{lastName}">Error</div>
                 </div>
                 <div class="mb-3">
-                    <label for="personNumber" class="form-label">Person number</label>
+                    <label for="personNumber" class="form-label" th:text="#{registration.personnumber}">Person number</label>
                     <input id="personNumber" class="form-control" type="text" th:field="*{personNumber}"
                            th:classappend="${#fields.hasErrors('personNumber')}? 'is-invalid'"/>
                     <div th:if="${#fields.hasErrors('personNumber')}" class="invalid-feedback" th:errors="*{personNumber}">Error</div>
                 </div>
                 <div class="row">
                     <div class="col mb-3">
-                        <label for="email" class="form-label">E-mail</label>
-                        <input id="email" class="form-control" type="email" th:field="*{email}"
+                        <label for="email" class="form-label" th:text="#{registration.email}">E-mail</label>
+                        <input id="email" class="form-control" type="text" th:field="*{email}"
                                th:classappend="${#fields.hasErrors('email')}? 'is-invalid'"/>
                         <div th:if="${#fields.hasErrors('email')}" class="invalid-feedback" th:errors="*{email}">Error</div>
                     </div>
                     <div class="col mb-3">
-                        <label for="confirmEmail" class="form-label">Confirm E-mail</label>
-                        <input id="confirmEmail" class="form-control" type="email" th:field="*{confirmEmail}"
+                        <label for="confirmEmail" class="form-label" th:text="#{registration.confirmemail}">Confirm E-mail</label>
+                        <input id="confirmEmail" class="form-control" type="text" th:field="*{confirmEmail}"
                                th:classappend="${#fields.hasErrors('confirmEmail')}? 'is-invalid'"/>
                         <div th:if="${#fields.hasErrors('confirmEmail')}" class="invalid-feedback" th:errors="*{confirmEmail}">Error</div>
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="username" class="form-label">Username</label>
+                    <label for="username" class="form-label" th:text="#{registration.username}">Username</label>
                     <input id="username" class="form-control" type="text" th:field="*{username}"
                            th:classappend="${#fields.hasErrors('username')}? 'is-invalid'"/>
                     <div th:if="${#fields.hasErrors('username')}" class="invalid-feedback" th:errors="*{username}">Error</div>
                 </div>
                 <div class="row">
                     <div class="col mb-3">
-                        <label for="password" class="form-label">Password</label>
+                        <label for="password" class="form-label" th:text="#{registration.password}">Password</label>
                         <input id="password" class="form-control" type="password" th:field="*{password}"
                                th:classappend="${#fields.hasErrors('password')}? 'is-invalid'"/>
                         <div th:if="${#fields.hasErrors('password')}" class="invalid-feedback" th:errors="*{password}">Error</div>
                     </div>
                     <div class="col mb-3">
-                        <label for="confirmPassword" class="form-label">Confirm Password</label>
+                        <label for="confirmPassword" class="form-label" th:text="#{registration.confirmpassword}">Confirm Password</label>
                         <input id="confirmPassword" class="form-control" type="password" th:field="*{confirmPassword}"
                                 th:classappend="${#fields.hasErrors('confirmPassword')}? 'is-invalid'"/>
                         <div th:if="${#fields.hasErrors('confirmPassword')}" class="invalid-feedback" th:errors="*{confirmPassword}">Error</div>
                     </div>
                 </div>
                 <div class="mb-3">
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                    <a class="btn btn-secondary" href="#" th:href="@{/login}" role="button">Cancel</a>
+                    <button type="submit" class="btn btn-primary" th:text="#{registration.submit}">Submit</button>
+                    <a class="btn btn-secondary" href="#" th:href="@{/login}" role="button" th:text="#{registration.cancel}">Cancel</a>
                 </div>
             </form>
         </div>

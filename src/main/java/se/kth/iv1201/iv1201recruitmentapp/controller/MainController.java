@@ -1,10 +1,13 @@
 package se.kth.iv1201.iv1201recruitmentapp.controller;
 
+import org.hibernate.exception.JDBCConnectionException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.sql.SQLException;
 
 /**
  * The controller for simple Get requests.
@@ -58,4 +61,5 @@ public class MainController {
     public String recruiterIndex(Model model) {
         return "/recruiter/index";
     }
+
 }
