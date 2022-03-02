@@ -12,20 +12,35 @@
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
                 <h1 th:text="#{recruiter.applications.title}">Applications</h1>
+                <div th:if="${param.nameError}">
+                    <div class="alert alert-danger" th:text="#{recruiter.applications.searchname.format.error}">Invalid name format</div>
+                </div>
+                <div th:if="${param.timeError}">
+                    <div class="alert alert-danger" th:text="#{recruiter.applications.searchtime.format.error}">Invalid time format</div>
+                </div>
                 <form th:action="@{/recruiter/applications}" th:object="${applicationsRequest}" class="mb-5" method="post">
                     <div class="mb-3">
                         <label class="form-label" th:text="#{recruiter.applications.searchtype}">Search Type</label>
                         <!-- TODO localization through database call (AGREE?) -->
-                        <select th:field="*{searchType}" class="form-select">
-                            <option th:each="options: ${searchOptions}"
+                        <select th:field="*{searchType}" id="searchType" class="form-select" onchange="testFunction();">
+                            <option th:each="options: ${applicationSearchOptions}"
                                     th:value="${options}"
                                     th:text="${options}">
                             </option>
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label for="searchText" class="form-label" th:text="#{recruiter.applications.searchtext}">Search Text</label>
-                        <input id="searchText" class="form-control" type="text" th:field="*{searchText}" />
+                    <div id="searchNameContainer" class="mb-3">
+                        <label for="searchName" class="form-label" th:text="#{recruiter.applications.searchname}" th:placeholder="#{recruiter.applications.searchname.format}">Name</label>
+                        <input id="searchName" class="form-control" type="text" th:field="*{searchName}" />
+                    </div>
+                    <div id="searchCompetenceContainer" class="mb-3">
+                        <!-- THIS SHOULD BE ANOTHER DROPDOWN -->
+                        <label for="searchCompetence" class="form-label" th:text="#{recruiter.applications.searchcompetence}">Competence</label>
+                        <input id="searchCompetence" class="form-control" type="text" th:field="*{searchCompetence}" />
+                    </div>
+                    <div id="searchTimeContainer" class="mb-3">
+                        <label for="searchTime" class="form-label" th:text="#{recruiter.applications.searchtime}" th:placeholder="#{recruiter.applications.searchtime.format}">Time span</label>
+                        <input id="searchTime" class="form-control" type="text" th:field="*{searchTime}" />
                     </div>
                     <div class="mb-3">
                         <button type="submit" class="btn btn-primary" th:text="#{recruiter.applications.searchbutton}">Search</button>
@@ -33,6 +48,7 @@
                 </form>
                 <table th:if="${applicationsResults}">
                     <h2>Results</h2>
+                    <p th:text="${applicationsResults.applications.size()} + ' ' + #{recruiter.applications.results}"></p>
                     <tr th:each="results: ${applicationsResults.applications}">
                         <td th:text="${results.person.name}" />
                         <td th:text="${results.person.surname}" />
@@ -44,4 +60,16 @@
         </div>
     </div>
 </body>
+<script>
+    function testFunction() {
+        let dom = document.getElementById("searchType");
+        console.log(dom.options[dom.selectedIndex].value);
+
+        // TODO
+        // onChange()
+        // check which type is currently selected
+        // and render corresponding input
+        // and clear the others (for validation)
+    }
+</script>
 </html>

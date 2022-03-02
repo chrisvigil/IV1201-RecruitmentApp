@@ -9,8 +9,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationsRequestDto;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationsResponseDto;
+import se.kth.iv1201.iv1201recruitmentapp.exception.ApplicationsNameSearchFormatException;
+import se.kth.iv1201.iv1201recruitmentapp.exception.ApplicationsTimeSearchFormatException;
 import se.kth.iv1201.iv1201recruitmentapp.model.Application;
+import se.kth.iv1201.iv1201recruitmentapp.model.Competence;
 import se.kth.iv1201.iv1201recruitmentapp.service.ApplicationsService;
+
+import java.util.List;
 
 /**
  * The controller for the applications page.
@@ -42,7 +47,7 @@ public class ApplicationsController {
     @GetMapping()
     public String showApplicationSearchForm(Model model) {
         String[] searchOptions = {"time", "competence", "name"};
-        model.addAttribute("searchOptions", searchOptions);
+        model.addAttribute("applicationSearchOptions", searchOptions);
         return "/recruiter/applications";
     }
 
@@ -59,15 +64,20 @@ public class ApplicationsController {
     @PostMapping()
     public String showApplicationSearchResults(Model model, @ModelAttribute("applicationsRequest") ApplicationsRequestDto applicationsRequestDto) {
         try {
-            // TODO <change>
+            // Localization?
             String[] searchOptions = {"time", "competence", "name"};
             model.addAttribute("searchOptions", searchOptions);
-            // TODO </change>
 
-            model.addAttribute("applicationsResults", applicationsService.getApplicationsSearchResults(applicationsRequestDto));
+            ApplicationsResponseDto response = applicationsService.getApplicationsSearchResults(applicationsRequestDto);
+            model.addAttribute("applicationsResults", response);
+
             return "/recruiter/applications";
-        } catch (Exception ex) {
-            return "/recruiter/applications";
+        }
+        catch (ApplicationsNameSearchFormatException e) {
+            return "/recruiter/applications?nameError=true";
+        }
+        catch (ApplicationsTimeSearchFormatException e) {
+            return "/recruiter/applications?timeError=true";
         }
     }
 
