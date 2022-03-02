@@ -49,7 +49,7 @@ public class MainController {
      */
     @GetMapping("/applicant/")
     public String applicantIndex(Model model) {
-        return "/applicant/index";
+        return "applicant/index";
     }
 
     /**
@@ -59,7 +59,7 @@ public class MainController {
      */
     @GetMapping("/recruiter/")
     public String recruiterIndex(Model model) {
-        return "/recruiter/index";
+        return "recruiter/index";
     }
 
 }
