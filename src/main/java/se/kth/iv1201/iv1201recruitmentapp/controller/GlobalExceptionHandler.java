@@ -17,7 +17,7 @@ public class GlobalExceptionHandler{
      */
     @ExceptionHandler(JDBCConnectionException.class)
     public String databaseConnectionError() {
-        return "/error/dbConnectionError";
+        return "error/dbConnectionError";
     }
 
 
