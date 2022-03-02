@@ -46,9 +46,8 @@ public class ApplicationsController {
      */
     @GetMapping()
     public String showApplicationSearchForm(Model model) {
-        String[] searchOptions = {"name", "competence", "time"};
-        model.addAttribute("applicationSearchOptions", searchOptions);
-        return "/recruiter/applications";
+        setSelectOptionsModelAttributes(model);
+        return "recruiter/applications";
     }
 
     /**
@@ -64,21 +63,28 @@ public class ApplicationsController {
     @PostMapping()
     public String showApplicationSearchResults(Model model, @ModelAttribute("applicationsRequest") ApplicationsRequestDto applicationsRequestDto) {
         try {
-            // Localization?
-            String[] searchOptions = {"name", "competence", "time"};
-            model.addAttribute("applicationSearchOptions", searchOptions);
+            setSelectOptionsModelAttributes(model);
 
             ApplicationsResponseDto response = applicationsService.getApplicationsSearchResults(applicationsRequestDto);
             model.addAttribute("applicationsResults", response);
 
-            return "/recruiter/applications";
+            return "recruiter/applications";
         }
         catch (ApplicationsNameSearchFormatException e) {
-            return "/recruiter/applications?nameError=true";
+            return "redirect:/recruiter/applications?nameError";
         }
         catch (ApplicationsTimeSearchFormatException e) {
-            return "/recruiter/applications?timeError=true";
+            return "redirect:/recruiter/applications?timeError";
         }
+    }
+
+    private void setSelectOptionsModelAttributes(Model model) {
+        String[] searchOptions = {"name", "competence", "time"};
+        model.addAttribute("applicationSearchOptions", searchOptions);
+
+        // TODO Localization
+        List<Competence> competences = applicationsService.getCompetences();
+        model.addAttribute("competences", competences);
     }
 
 }
