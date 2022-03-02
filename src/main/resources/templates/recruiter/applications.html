@@ -22,23 +22,23 @@
                     <div class="mb-3">
                         <label class="form-label" th:text="#{recruiter.applications.searchtype}">Search Type</label>
                         <!-- TODO localization through database call (AGREE?) -->
-                        <select th:field="*{searchType}" id="searchType" class="form-select" onchange="testFunction();">
-                            <option th:each="options: ${applicationSearchOptions}"
-                                    th:value="${options}"
-                                    th:text="${options}">
+                        <select th:field="*{searchType}" id="searchType" class="form-select" onchange="changeVisible();">
+                            <option th:each="option: ${applicationSearchOptions}"
+                                    th:value="${option}"
+                                    th:text="${option}">
                             </option>
                         </select>
                     </div>
-                    <div id="searchNameContainer" class="mb-3">
+                    <div id="searchNameContainer" class="mb-3" style="display: block">
                         <label for="searchName" class="form-label" th:text="#{recruiter.applications.searchname}" th:placeholder="#{recruiter.applications.searchname.format}">Name</label>
                         <input id="searchName" class="form-control" type="text" th:field="*{searchName}" />
                     </div>
-                    <div id="searchCompetenceContainer" class="mb-3">
+                    <div id="searchCompetenceContainer" class="mb-3" style="display: none">
                         <!-- THIS SHOULD BE ANOTHER DROPDOWN -->
                         <label for="searchCompetence" class="form-label" th:text="#{recruiter.applications.searchcompetence}">Competence</label>
                         <input id="searchCompetence" class="form-control" type="text" th:field="*{searchCompetence}" />
                     </div>
-                    <div id="searchTimeContainer" class="mb-3">
+                    <div id="searchTimeContainer" class="mb-3" style="display: none">
                         <label for="searchTime" class="form-label" th:text="#{recruiter.applications.searchtime}" th:placeholder="#{recruiter.applications.searchtime.format}">Time span</label>
                         <input id="searchTime" class="form-control" type="text" th:field="*{searchTime}" />
                     </div>
@@ -61,9 +61,23 @@
     </div>
 </body>
 <script>
-    function testFunction() {
-        let dom = document.getElementById("searchType");
-        console.log(dom.options[dom.selectedIndex].value);
+    function changeVisible() {
+        //let currentSelected = select.options[select.selectedIndex];
+
+        let select = document.getElementById("searchType");
+        let nameContainer = document.getElementById("searchNameContainer");
+        let competenceContainer = document.getElementById("searchCompetenceContainer");
+        let timeContainer = document.getElementById("searchTimeContainer");
+
+        let containers = [nameContainer, competenceContainer, timeContainer];
+
+        containers.forEach(con => {
+            con.style.display = "none";
+        });
+
+        containers[select.selectedIndex].style.display = "block";
+
+
 
         // TODO
         // onChange()

@@ -46,7 +46,7 @@ public class ApplicationsController {
      */
     @GetMapping()
     public String showApplicationSearchForm(Model model) {
-        String[] searchOptions = {"time", "competence", "name"};
+        String[] searchOptions = {"name", "competence", "time"};
         model.addAttribute("applicationSearchOptions", searchOptions);
         return "/recruiter/applications";
     }
@@ -65,8 +65,8 @@ public class ApplicationsController {
     public String showApplicationSearchResults(Model model, @ModelAttribute("applicationsRequest") ApplicationsRequestDto applicationsRequestDto) {
         try {
             // Localization?
-            String[] searchOptions = {"time", "competence", "name"};
-            model.addAttribute("searchOptions", searchOptions);
+            String[] searchOptions = {"name", "competence", "time"};
+            model.addAttribute("applicationSearchOptions", searchOptions);
 
             ApplicationsResponseDto response = applicationsService.getApplicationsSearchResults(applicationsRequestDto);
             model.addAttribute("applicationsResults", response);
