@@ -20,4 +20,10 @@ public class GlobalExceptionHandler{
         return "/error/dbConnectionError";
     }
 
+
+    @ExceptionHandler(Exception.class)
+    public String genericError()
+    {
+        return "error";
+    }
 }
