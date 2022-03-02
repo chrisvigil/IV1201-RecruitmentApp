@@ -8,7 +8,7 @@
 </head>
 <body>
     <div th:replace="fragments/header :: header"></div>
-    <div th:fragment="dbConnectionError">
+    <div class="container">
         <div th:text="#{er.dbConnectionError.errormessage.1}">There was an error with the connection to the database.</div>
         <div th:text="#{er.dbConnectionError.errormessage.2}">Please try again later.</div>
         <div>
