@@ -26,14 +26,14 @@ public interface ApplicationsRepository extends JpaRepository<Application, Integ
 
     /**
      * Retrieves list of application objects by
-     * competence name.
+     * competence id.
      *
-     * @param competence The competence name.
+     * @param competenceId The competence id.
      * @return The list of application objects.
      */
-    @Query(value = "SELECT a.application_id, a.person_id, a.season_id, a.status FROM application AS a INNER JOIN competence_profile AS cp ON a.person_id = cp.person_id INNER JOIN competence as co ON cp.competence_id = co.competence_id WHERE co.name = ?1",
+    @Query(value = "SELECT a.application_id, a.person_id, a.season_id, a.status FROM application AS a INNER JOIN competence_profile AS cp ON a.person_id = cp.person_id WHERE cp.competence_id = ?1",
             nativeQuery = true)
-    List<Application> findAllByCompetence(String competence);
+    List<Application> findAllByCompetence(int competenceId);
 
     /**
      * Retrieves list of application objects by

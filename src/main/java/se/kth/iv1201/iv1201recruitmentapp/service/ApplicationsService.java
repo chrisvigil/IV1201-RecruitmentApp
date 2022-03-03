@@ -8,11 +8,14 @@ import se.kth.iv1201.iv1201recruitmentapp.exception.ApplicationsNameSearchFormat
 import se.kth.iv1201.iv1201recruitmentapp.exception.ApplicationsTimeSearchFormatException;
 import se.kth.iv1201.iv1201recruitmentapp.model.Application;
 import se.kth.iv1201.iv1201recruitmentapp.model.Competence;
+import se.kth.iv1201.iv1201recruitmentapp.model.CompetenceLocalization;
 import se.kth.iv1201.iv1201recruitmentapp.repository.ApplicationsRepository;
+import se.kth.iv1201.iv1201recruitmentapp.repository.CompetenceLocalizationRepository;
 import se.kth.iv1201.iv1201recruitmentapp.repository.CompetenceRepository;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -25,16 +28,39 @@ public class ApplicationsService {
     private ApplicationsRepository applicationsRepository;
 
     @Autowired
+    private CompetenceLocalizationRepository competenceLocalizationRepository;
+
+    @Autowired
     private CompetenceRepository competenceRepository;
 
     /**
      * Employs the corresponding database actions
-     * to get all competences.
+     * to get all competences depending on the
+     * currently selected locale, if the locale
+     * is not found, a default set of competences
+     * will be returned.
      *
      * @return The competences.
      */
     public List<Competence> getCompetences() {
-        return competenceRepository.findAll();
+        List<Competence> results = new LinkedList<Competence>();
+
+        // TODO change 'sv'
+        List<CompetenceLocalization> competenceLocalizations = competenceLocalizationRepository.findAllByLocale("sv");
+
+        if (competenceLocalizations.size() > 0) {
+            for (CompetenceLocalization cl : competenceLocalizations) {
+                Competence c = new Competence();
+                c.setId(cl.getCompetence().getId());
+                c.setName(cl.getCompetenceName());
+                results.add(c);
+            }
+        }
+        else {
+            results = competenceRepository.findAll();
+        }
+
+        return results;
     }
 
     /**
@@ -66,7 +92,7 @@ public class ApplicationsService {
                 }
             }
             case "competence" -> {
-                results = applicationsRepository.findAllByCompetence(searchCompetence);
+                results = applicationsRepository.findAllByCompetence(Integer.parseInt(searchCompetence));
             }
             case "time" -> {
                 String[] dates = searchTime.split(" ");
