@@ -1,6 +1,7 @@
 package se.kth.iv1201.iv1201recruitmentapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -79,7 +80,16 @@ public class ApplicationsController {
     }
 
     private void setSelectOptionsModelAttributes(Model model) {
-        String[] searchOptions = {"name", "competence", "time"};
+        String[] searchOptions;
+
+        switch (LocaleContextHolder.getLocale().getLanguage()) {
+            case "sv":
+                searchOptions = new String[]{"namn", "kompetens", "tid"};
+                break;
+            default:
+                searchOptions = new String[]{"name", "competence", "time"};
+        }
+
         model.addAttribute("applicationSearchOptions", searchOptions);
 
         // TODO Localization

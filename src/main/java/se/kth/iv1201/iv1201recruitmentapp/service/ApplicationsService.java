@@ -82,6 +82,12 @@ public class ApplicationsService {
 
         List<Application> results;
 
+        // TODO ok? (yucky code but works)
+        // TODO also the javascript code creates a view bug, probably ok...
+        if (searchType.equals("namn")) searchType = "name";
+        if (searchType.equals("kompetens")) searchType = "competence";
+        if (searchType.equals("tid")) searchType = "time";
+
         switch (searchType) {
             case "name" -> {
                 String[] names = searchName.split(" ");
