@@ -1,6 +1,7 @@
 package se.kth.iv1201.iv1201recruitmentapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationsRequestDto;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationsResponseDto;
@@ -45,8 +46,8 @@ public class ApplicationsService {
     public List<Competence> getCompetences() {
         List<Competence> results = new LinkedList<Competence>();
 
-        // TODO change 'sv'
-        List<CompetenceLocalization> competenceLocalizations = competenceLocalizationRepository.findAllByLocale("sv");
+        String lang = LocaleContextHolder.getLocale().getLanguage();
+        List<CompetenceLocalization> competenceLocalizations = competenceLocalizationRepository.findAllByLocale(lang);
 
         if (competenceLocalizations.size() > 0) {
             for (CompetenceLocalization cl : competenceLocalizations) {
