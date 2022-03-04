@@ -12,11 +12,11 @@ import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationsRequestDto;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationsResponseDto;
 import se.kth.iv1201.iv1201recruitmentapp.exception.ApplicationsNameSearchFormatException;
 import se.kth.iv1201.iv1201recruitmentapp.exception.ApplicationsTimeSearchFormatException;
-import se.kth.iv1201.iv1201recruitmentapp.model.Application;
 import se.kth.iv1201.iv1201recruitmentapp.model.Competence;
 import se.kth.iv1201.iv1201recruitmentapp.service.ApplicationsService;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * The controller for the applications page.
@@ -46,8 +46,8 @@ public class ApplicationsController {
      * @return The recruiter applications page.
      */
     @GetMapping()
-    public String showApplicationSearchForm(Model model) {
-        setSelectOptionsModelAttributes(model);
+    public String showApplicationSearchForm(Model model, Locale locale) {
+        setSelectOptionsModelAttributes(model, locale);
         return "recruiter/applications";
     }
 
@@ -62,9 +62,9 @@ public class ApplicationsController {
      * @return The recruiter applications search result page.
      */
     @PostMapping()
-    public String showApplicationSearchResults(Model model, @ModelAttribute("applicationsRequest") ApplicationsRequestDto applicationsRequestDto) {
+    public String showApplicationSearchResults(Model model, Locale locale, @ModelAttribute("applicationsRequest") ApplicationsRequestDto applicationsRequestDto) {
         try {
-            setSelectOptionsModelAttributes(model);
+            setSelectOptionsModelAttributes(model, locale);
 
             ApplicationsResponseDto response = applicationsService.getApplicationsSearchResults(applicationsRequestDto);
             model.addAttribute("applicationsResults", response);
@@ -79,10 +79,10 @@ public class ApplicationsController {
         }
     }
 
-    private void setSelectOptionsModelAttributes(Model model) {
+    private void setSelectOptionsModelAttributes(Model model, Locale locale) {
         String[] searchOptions;
 
-        switch (LocaleContextHolder.getLocale().getLanguage()) {
+        switch (locale.getLanguage()) {
             case "sv":
                 searchOptions = new String[]{"namn", "kompetens", "tid"};
                 break;
