@@ -2,12 +2,10 @@ package se.kth.iv1201.iv1201recruitmentapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationsRequestDto;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationsResponseDto;
 import se.kth.iv1201.iv1201recruitmentapp.exception.ApplicationsNameSearchFormatException;
@@ -17,6 +15,9 @@ import se.kth.iv1201.iv1201recruitmentapp.service.ApplicationsService;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * The controller for the applications page.
@@ -62,6 +63,41 @@ public class ApplicationsController {
      * @return The recruiter applications search result page.
      */
     @PostMapping()
+    public String showApplicationSearchResults(
+            Model model,
+            Locale locale,
+            @ModelAttribute("applicationsRequest") ApplicationsRequestDto applicationsRequestDto,
+            @RequestParam("page") Optional<Integer> page,
+            @RequestParam("size") Optional<Integer> size) {
+
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(15);
+
+        applicationsRequestDto.setPageable(PageRequest.of(currentPage - 1, pageSize));
+
+        try {
+            setSelectOptionsModelAttributes(model, locale);
+
+            ApplicationsResponseDto response = applicationsService.getApplicationsSearchResults(applicationsRequestDto);
+            model.addAttribute("applicationsResults", response);
+
+            int totalPages = response.getApplicationPage().getTotalPages();
+            if (totalPages > 0) {
+                List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
+                model.addAttribute("pageNumbers", pageNumbers);
+            }
+
+            return "recruiter/applications";
+        }
+        catch (ApplicationsNameSearchFormatException e) {
+            return "redirect:/recruiter/applications?nameError";
+        }
+        catch (ApplicationsTimeSearchFormatException e) {
+            return "redirect:/recruiter/applications?timeError";
+        }
+    }
+    /*
+    @PostMapping()
     public String showApplicationSearchResults(Model model, Locale locale, @ModelAttribute("applicationsRequest") ApplicationsRequestDto applicationsRequestDto) {
         try {
             setSelectOptionsModelAttributes(model, locale);
@@ -78,6 +114,7 @@ public class ApplicationsController {
             return "redirect:/recruiter/applications?timeError";
         }
     }
+    */
 
     private void setSelectOptionsModelAttributes(Model model, Locale locale) {
         String[] searchOptions;
@@ -92,7 +129,6 @@ public class ApplicationsController {
 
         model.addAttribute("applicationSearchOptions", searchOptions);
 
-        // TODO Localization
         List<Competence> competences = applicationsService.getCompetences();
         model.addAttribute("competences", competences);
     }

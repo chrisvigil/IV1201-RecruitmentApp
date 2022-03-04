@@ -2,6 +2,10 @@ package se.kth.iv1201.iv1201recruitmentapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationsRequestDto;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationsResponseDto;
@@ -16,6 +20,7 @@ import se.kth.iv1201.iv1201recruitmentapp.repository.CompetenceRepository;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -80,6 +85,75 @@ public class ApplicationsService {
         String searchCompetence = applicationsRequestDto.getSearchCompetence();
         String searchTime = applicationsRequestDto.getSearchTime();
 
+        Pageable pageable = applicationsRequestDto.getPageable();
+        int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
+        int startItem = currentPage * pageSize;
+
+        List<Application> results;
+        List<Application> list;
+
+        // TODO ok? (yucky code but works)
+        // TODO also the javascript code creates a view bug, probably ok...
+        if (searchType.equals("namn")) searchType = "name";
+        if (searchType.equals("kompetens")) searchType = "competence";
+        if (searchType.equals("tid")) searchType = "time";
+
+        switch (searchType) {
+            case "name" -> {
+                String[] names = searchName.split(" ");
+
+                try {
+                    results = applicationsRepository.findAllByName(names[0], names[1]);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    throw new ApplicationsNameSearchFormatException("Invalid name format");
+                }
+            }
+            case "competence" -> {
+                results = applicationsRepository.findAllByCompetence(Integer.parseInt(searchCompetence));
+            }
+            case "time" -> {
+                String[] dates = searchTime.split(" ");
+
+                try {
+                    LocalDate from_date = LocalDate.parse(dates[0]);
+                    LocalDate to_date = LocalDate.parse(dates[1]);
+
+                    results = applicationsRepository.findAllByTime(from_date, to_date);
+                } catch (DateTimeParseException e) {
+                    throw new ApplicationsTimeSearchFormatException("Invalid time format");
+                }
+            }
+            default -> {
+                results = null;
+            }
+        }
+
+        if (results.size() < startItem) {
+            list = Collections.emptyList();
+        }
+        else {
+            int toIndex = Math.min(startItem + pageSize, results.size());
+            list = results.subList(startItem, toIndex);
+        }
+
+        Page<Application> applicationPage = new PageImpl<Application>(
+                list,
+                PageRequest.of(currentPage, pageSize),
+                results.size());
+
+        response.setApplicationPage(applicationPage);
+
+        return response;
+    }
+    /*public ApplicationsResponseDto getApplicationsSearchResults(ApplicationsRequestDto applicationsRequestDto) {
+        ApplicationsResponseDto response = new ApplicationsResponseDto();
+
+        String searchType = applicationsRequestDto.getSearchType();
+        String searchName = applicationsRequestDto.getSearchName();
+        String searchCompetence = applicationsRequestDto.getSearchCompetence();
+        String searchTime = applicationsRequestDto.getSearchTime();
+
         List<Application> results;
 
         // TODO ok? (yucky code but works)
@@ -121,6 +195,6 @@ public class ApplicationsService {
         response.setApplications(results);
 
         return response;
-    }
+    }*/
 
 }
