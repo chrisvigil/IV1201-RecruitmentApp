@@ -63,41 +63,6 @@ public class ApplicationsController {
      * @return The recruiter applications search result page.
      */
     @PostMapping()
-    public String showApplicationSearchResults(
-            Model model,
-            Locale locale,
-            @ModelAttribute("applicationsRequest") ApplicationsRequestDto applicationsRequestDto,
-            @RequestParam("page") Optional<Integer> page,
-            @RequestParam("size") Optional<Integer> size) {
-
-        int currentPage = page.orElse(1);
-        int pageSize = size.orElse(15);
-
-        applicationsRequestDto.setPageable(PageRequest.of(currentPage - 1, pageSize));
-
-        try {
-            setSelectOptionsModelAttributes(model, locale);
-
-            ApplicationsResponseDto response = applicationsService.getApplicationsSearchResults(applicationsRequestDto);
-            model.addAttribute("applicationsResults", response);
-
-            int totalPages = response.getApplicationPage().getTotalPages();
-            if (totalPages > 0) {
-                List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
-                model.addAttribute("pageNumbers", pageNumbers);
-            }
-
-            return "recruiter/applications";
-        }
-        catch (ApplicationsNameSearchFormatException e) {
-            return "redirect:/recruiter/applications?nameError";
-        }
-        catch (ApplicationsTimeSearchFormatException e) {
-            return "redirect:/recruiter/applications?timeError";
-        }
-    }
-    /*
-    @PostMapping()
     public String showApplicationSearchResults(Model model, Locale locale, @ModelAttribute("applicationsRequest") ApplicationsRequestDto applicationsRequestDto) {
         try {
             setSelectOptionsModelAttributes(model, locale);
@@ -114,7 +79,6 @@ public class ApplicationsController {
             return "redirect:/recruiter/applications?timeError";
         }
     }
-    */
 
     private void setSelectOptionsModelAttributes(Model model, Locale locale) {
         String[] searchOptions;

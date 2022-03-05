@@ -12,9 +12,6 @@ public class ApplicationsRequestDto {
     private String searchCompetence;
     private String searchTime;
 
-    // New
-    private Pageable pageable;
-
     public String getSearchName() {
         return searchName;
     }
@@ -45,16 +42,6 @@ public class ApplicationsRequestDto {
 
     public void setSearchTime(String searchTime) {
         this.searchTime = searchTime;
-    }
-
-    // New
-    public Pageable getPageable() {
-        return pageable;
-    }
-
-    // New
-    public void setPageable(Pageable pageable) {
-        this.pageable = pageable;
     }
 
 }

@@ -49,7 +49,7 @@
                         <button type="submit" class="btn btn-primary" th:text="#{recruiter.applications.searchbutton}">Search</button>
                     </div>
                 </form>
-                <!--<table th:if="${applicationsResults}">
+                <table th:if="${applicationsResults}">
                     <h2>Results</h2>
                     <p th:text="${applicationsResults.applications.size()} + ' ' + #{recruiter.applications.results}"></p>
                     <tr th:each="results: ${applicationsResults.applications}">
@@ -57,31 +57,7 @@
                         <td th:text="${results.person.surname}" />
                         <td th:text="${results.status}" />
                     </tr>
-                </table>-->
-                <div th:if="${applicationsResults}">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th th:text="#{recruiter.applications.results.table.firstname}" />
-                                <th th:text="#{recruiter.applications.results.table.surname}" />
-                                <th th:text="#{recruiter.applications.results.table.status}" />
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="appli, iStat : ${applicationsResults.applicationPage.content}">
-                                <td th:text="${appli.person.name}" />
-                                <td th:text="${appli.person.surname}" />
-                                <td th:text="${appli.status}" />
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div th:if="${applicationsResults.applicationPage.totalPages > 0}" class="pagination m-1" style="float:left"
-                         th:each="pageNumber : ${pageNumbers}">
-                        <a th:href="@{/applications(size=${applicationsResults.applicationPage.size}, page=${pageNumber})}"
-                           th:text="${pageNumber}"
-                           th:class="${pageNumber == applicationsResults.applicationPage.number + 1} ? active"></a>
-                    </div>
-                </div>
+                </table>
             </div>
         </div>
     </div>
