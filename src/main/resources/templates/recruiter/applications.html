@@ -49,7 +49,7 @@
                         <button type="submit" class="btn btn-primary" th:text="#{recruiter.applications.searchbutton}">Search</button>
                     </div>
                 </form>
-                <table th:if="${applicationsResults}">
+                <!--<table th:if="${applicationsResults}">
                     <h2>Results</h2>
                     <p th:text="${applicationsResults.applications.size()} + ' ' + #{recruiter.applications.results}"></p>
                     <tr th:each="results: ${applicationsResults.applications}">
@@ -57,7 +57,31 @@
                         <td th:text="${results.person.surname}" />
                         <td th:text="${results.status}" />
                     </tr>
-                </table>
+                </table>-->
+                <div th:if="${applicationsResults}">
+                    <h2 th:text="#{recruiter.applications.results}">Results</h2>
+                    <p th:text="${applicationsResults.applications.size()} + ' ' + #{recruiter.applications.results}"></p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th th:text="#{recruiter.applications.results.table.firstname}">First name</th>
+                                <th th:text="#{recruiter.applications.results.table.surname}">Surname</th>
+                                <th th:text="#{recruiter.applications.results.table.status}">Status</th>
+                                <th th:text="#{recruiter.applications.results.table.view}">View</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="results: ${applicationsResults.applications}" href="#" th:href="@{/recruiter/application}">
+                                <td th:text="${results.person.name}">Name</td>
+                                <td th:text="${results.person.surname}">Surname</td>
+                                <td th:text="${results.status}">Status</td>
+                                <td>
+                                    <a href="#" th:href="@{/recruiter/application(applicationId=${results.id})}" th:text="#{recruiter.applications.results.table.view}">View</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
