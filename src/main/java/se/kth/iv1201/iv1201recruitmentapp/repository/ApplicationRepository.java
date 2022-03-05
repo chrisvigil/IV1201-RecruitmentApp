@@ -6,6 +6,7 @@ import se.kth.iv1201.iv1201recruitmentapp.model.Application;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Defines database access for the applications.
@@ -46,5 +47,14 @@ public interface ApplicationsRepository extends JpaRepository<Application, Integ
     @Query(value = "SELECT a.application_id, a.person_id, a.season_id, a.status FROM application AS a INNER JOIN person AS p ON a.person_id = p.person_id WHERE p.name = ?1 AND p.surname = ?2",
             nativeQuery = true)
     List<Application> findAllByName(String firstName, String surname);
+
+    /**
+     * Retrieves an application from the
+     * specified application id.
+     *
+     * @param applicationId The application id.
+     * @return The application.
+     */
+    Optional<Application> findByApplicationId(int applicationId);
 
 }
