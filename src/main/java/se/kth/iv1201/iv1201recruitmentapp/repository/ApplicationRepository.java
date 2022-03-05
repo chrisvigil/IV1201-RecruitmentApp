@@ -11,7 +11,7 @@ import java.util.Optional;
 /**
  * Defines database access for the applications.
  */
-public interface ApplicationsRepository extends JpaRepository<Application, Integer> {
+public interface ApplicationRepository extends JpaRepository<Application, Integer> {
 
     /**
      * Retrieves list of application objects by
@@ -52,9 +52,9 @@ public interface ApplicationsRepository extends JpaRepository<Application, Integ
      * Retrieves an application from the
      * specified application id.
      *
-     * @param applicationId The application id.
+     * @param id The application id.
      * @return The application.
      */
-    Optional<Application> findByApplicationId(int applicationId);
+    Optional<Application> findById(int id);
 
 }

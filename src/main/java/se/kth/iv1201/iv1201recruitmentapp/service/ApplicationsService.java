@@ -2,10 +2,6 @@ package se.kth.iv1201.iv1201recruitmentapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationsRequestDto;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationsResponseDto;
@@ -14,13 +10,12 @@ import se.kth.iv1201.iv1201recruitmentapp.exception.ApplicationsTimeSearchFormat
 import se.kth.iv1201.iv1201recruitmentapp.model.Application;
 import se.kth.iv1201.iv1201recruitmentapp.model.Competence;
 import se.kth.iv1201.iv1201recruitmentapp.model.CompetenceLocalization;
-import se.kth.iv1201.iv1201recruitmentapp.repository.ApplicationsRepository;
+import se.kth.iv1201.iv1201recruitmentapp.repository.ApplicationRepository;
 import se.kth.iv1201.iv1201recruitmentapp.repository.CompetenceLocalizationRepository;
 import se.kth.iv1201.iv1201recruitmentapp.repository.CompetenceRepository;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,7 +26,7 @@ import java.util.List;
 public class ApplicationsService {
 
     @Autowired
-    private ApplicationsRepository applicationsRepository;
+    private ApplicationRepository applicationRepository;
 
     @Autowired
     private CompetenceLocalizationRepository competenceLocalizationRepository;
@@ -98,13 +93,13 @@ public class ApplicationsService {
                 String[] names = searchName.split(" ");
 
                 try {
-                    results = applicationsRepository.findAllByName(names[0], names[1]);
+                    results = applicationRepository.findAllByName(names[0], names[1]);
                 } catch (ArrayIndexOutOfBoundsException e) {
                     throw new ApplicationsNameSearchFormatException("Invalid name format");
                 }
             }
             case "competence" -> {
-                results = applicationsRepository.findAllByCompetence(Integer.parseInt(searchCompetence));
+                results = applicationRepository.findAllByCompetence(Integer.parseInt(searchCompetence));
             }
             case "time" -> {
                 String[] dates = searchTime.split(" ");
@@ -113,7 +108,7 @@ public class ApplicationsService {
                     LocalDate from_date = LocalDate.parse(dates[0]);
                     LocalDate to_date = LocalDate.parse(dates[1]);
 
-                    results = applicationsRepository.findAllByTime(from_date, to_date);
+                    results = applicationRepository.findAllByTime(from_date, to_date);
                 } catch (DateTimeParseException e) {
                     throw new ApplicationsTimeSearchFormatException("Invalid time format");
                 }

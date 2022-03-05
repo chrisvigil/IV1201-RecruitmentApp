@@ -1,8 +1,6 @@
 package se.kth.iv1201.iv1201recruitmentapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +13,6 @@ import se.kth.iv1201.iv1201recruitmentapp.service.ApplicationsService;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * The controller for the applications page.
