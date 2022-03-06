@@ -3,6 +3,7 @@ package se.kth.iv1201.iv1201recruitmentapp.service;
 import net.bytebuddy.dynamic.scaffold.MethodGraph;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationRequestDto;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationResponseDto;
 import se.kth.iv1201.iv1201recruitmentapp.model.*;
 import se.kth.iv1201.iv1201recruitmentapp.repository.ApplicationRepository;
@@ -13,7 +14,6 @@ import se.kth.iv1201.iv1201recruitmentapp.repository.CompetenceProfileRepository
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 /**
  * Service for retrieving application information.
@@ -61,14 +61,6 @@ public class ApplicationService {
             competenceProfileWrapper.setCompetenceProfile(competenceProfile);
 
             competenceProfileWrappers.add(competenceProfileWrapper);
-
-            /*
-            //System.out.println(applicationId + " >>>" + c.getId() + ", " + c.getPerson().getId() + ", " + c.getCompetence() + ", " + c.getYearsOfExperience() + "\nc: " + competenceLocalizationRepository.findByCompetenceIdAndLocale(c.getId(), locale.getLanguage()));
-            int id = c.getCompetence().getId();
-            String l = locale.getLanguage();
-            System.out.println(">>>" + id + ", " + l);
-            Optional<CompetenceLocalization> cl = competenceLocalizationRepository.findByCompetenceIdAndLocale(id, l);
-            System.out.println("|||" + cl.get().getCompetenceName())*/
         }
 
         response.setApplication(application);
@@ -76,6 +68,18 @@ public class ApplicationService {
         response.setCompetenceProfileWrappers(competenceProfileWrappers);
 
         return response;
+    }
+
+    /**
+     * Updates the database with the new application
+     * status as given.
+     *
+     * @param status The status.
+     */
+    public void updateApplicationStatus(int applicationId, String status) {
+        Application application = applicationRepository.getById(applicationId);
+        application.setStatus(status);
+        applicationRepository.save(application);
     }
 
 }

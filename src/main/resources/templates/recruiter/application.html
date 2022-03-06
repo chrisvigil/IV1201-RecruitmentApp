@@ -43,7 +43,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <form th:action="@{/recruiter/application(applicationId=${applicationData.application.id})}" th:object="${applicationRequest}">
+                <form th:action="@{/recruiter/application(applicationId=${applicationData.application.id})}" th:object="${applicationRequest}" method="post">
                     <div class="mb-3">
                         <label class="form-label"><h5 th:text="#{recruiter.application.status}">Status</h5></label>
                         <select th:field="*{status}" class="form-select">

@@ -50,29 +50,45 @@ public class ApplicationController {
             return "redirect:/recruiter/applications";
 
         setStatusOptions(model, locale);
-
-        ApplicationResponseDto response = applicationService.getApplicationData(applicationId.get(), locale);
-        model.addAttribute("applicationData", response);
+        setApplicationData(model, locale, applicationId);
 
         return "recruiter/application";
     }
 
 
     /**
-     * TODO
+     * Post request for the recruiter application page.
+     * Will update the status of an application as
+     * requested, then display information about the
+     * application in the current locale as specified
+     * by an application id.
      *
-     * @param model
-     * @param locale
-     * @param applicationId
-     * @return
+     * @param model Model object used by the application page.
+     * @param locale The locale.
+     * @param applicationId The application id.
+     * @param applicationRequestDto The application request dto object.
+     * @return The recruiter application page.
      */
     @PostMapping()
-    public String updateApplication(Model model, Locale locale, @RequestParam("applicationId") Optional<Integer> applicationId) {
+    public String updateApplication(Model model,
+                                    Locale locale,
+                                    @RequestParam("applicationId") Optional<Integer> applicationId,
+                                    @ModelAttribute("applicationRequest") ApplicationRequestDto applicationRequestDto) {
+
         if (applicationId.isEmpty())
             return "redirect:/recruiter/applications";
 
-        //setStatusOptions(model, locale);
-        return "";
+        String status = parseStatus(applicationRequestDto);
+        applicationService.updateApplicationStatus(applicationId.get(), status);
+        setStatusOptions(model, locale);
+        setApplicationData(model, locale, applicationId);
+
+        return "recruiter/application";
+    }
+
+    private void setApplicationData(Model model, Locale locale, Optional<Integer> applicationId) {
+        ApplicationResponseDto response = applicationService.getApplicationData(applicationId.get(), locale);
+        model.addAttribute("applicationData", response);
     }
 
     private void setStatusOptions(Model model, Locale locale) {
@@ -92,6 +108,20 @@ public class ApplicationController {
         }
 
         model.addAttribute("statusOptions", statusOptions);
+    }
+
+    private String parseStatus(ApplicationRequestDto applicationRequestDto) {
+        switch (applicationRequestDto.getStatus()) {
+            case "1":
+                return "accepted";
+            case "2":
+                return "rejected";
+            case "3":
+                return "unhandled";
+            default:
+                // TODO error handling?
+                return "unhandled";
+        }
     }
 
 }
