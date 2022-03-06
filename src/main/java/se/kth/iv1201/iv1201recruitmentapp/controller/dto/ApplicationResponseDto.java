@@ -2,6 +2,7 @@ package se.kth.iv1201.iv1201recruitmentapp.controller.dto;
 
 import se.kth.iv1201.iv1201recruitmentapp.model.Application;
 import se.kth.iv1201.iv1201recruitmentapp.model.Availability;
+import se.kth.iv1201.iv1201recruitmentapp.model.CompetenceProfileWrapper;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
 public class ApplicationResponseDto {
     private Application application;
     private List<Availability> availabilities;
+    private List<CompetenceProfileWrapper> competenceProfileWrappers;
 
     public Application getApplication() {
         return application;
@@ -27,6 +29,14 @@ public class ApplicationResponseDto {
 
     public void setAvailabilities(List<Availability> availabilities) {
         this.availabilities = availabilities;
+    }
+
+    public List<CompetenceProfileWrapper> getCompetenceProfileWrappers() {
+        return competenceProfileWrappers;
+    }
+
+    public void setCompetenceProfileWrappers(List<CompetenceProfileWrapper> competenceProfileWrappers) {
+        this.competenceProfileWrappers = competenceProfileWrappers;
     }
 
 }

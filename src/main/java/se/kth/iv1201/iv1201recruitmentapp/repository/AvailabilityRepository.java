@@ -18,7 +18,7 @@ public interface AvailabilityRepository extends JpaRepository<Availability, Inte
      * @param applicationId The application id.
      * @return The availabilities.
      */
-    @Query(value = "select av.availability_id, av.person_id, av.from_date, av.to_date from application as app inner join season as s on app.season_id=s.season_id right outer join availability as av on app.person_id=av.person_id where app.application_id=?1 and av.from_date>s.season_start and av.to_date<s.season_end\n",
+    @Query(value = "SELECT av.availability_id, av.person_id, av.from_date, av.to_date FROM application AS app INNER JOIN season AS s ON app.season_id=s.season_id RIGHT OUTER JOIN availability AS av ON app.person_id=av.person_id WHERE app.application_id=?1 AND av.from_date>s.season_start AND av.to_date<s.season_end",
             nativeQuery = true)
     List<Availability> getAvailabilityByApplicationId(int applicationId);
 

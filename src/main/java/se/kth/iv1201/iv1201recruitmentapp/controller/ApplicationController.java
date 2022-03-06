@@ -3,12 +3,10 @@ package se.kth.iv1201.iv1201recruitmentapp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationRequestDto;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationResponseDto;
+import se.kth.iv1201.iv1201recruitmentapp.model.Status;
 import se.kth.iv1201.iv1201recruitmentapp.service.ApplicationService;
 
 import java.util.Locale;
@@ -37,36 +35,59 @@ public class ApplicationController {
 
     /**
      * Get request for the recruiter application page.
-     * Will display information about the application.
+     * Will display information about the application
+     * in the current locale as specified by an
+     * application id.
      *
      * @param model Model object used by the application page.
+     * @param locale The locale.
+     * @param applicationId The application id.
      * @return The recruiter application page.
      */
     @GetMapping()
     public String showApplication(Model model, Locale locale, @RequestParam("applicationId") Optional<Integer> applicationId) {
-        // TODO check that navigation to this page without an id returns one to the applications search page
         if (applicationId.isEmpty())
             return "redirect:/recruiter/applications";
 
         setStatusOptions(model, locale);
 
-        ApplicationResponseDto response = applicationService.getApplicationData(applicationId.get());
+        ApplicationResponseDto response = applicationService.getApplicationData(applicationId.get(), locale);
         model.addAttribute("applicationData", response);
 
         return "recruiter/application";
     }
 
-    // TODO PostMapping
+
+    /**
+     * TODO
+     *
+     * @param model
+     * @param locale
+     * @param applicationId
+     * @return
+     */
+    @PostMapping()
+    public String updateApplication(Model model, Locale locale, @RequestParam("applicationId") Optional<Integer> applicationId) {
+        if (applicationId.isEmpty())
+            return "redirect:/recruiter/applications";
+
+        //setStatusOptions(model, locale);
+        return "";
+    }
 
     private void setStatusOptions(Model model, Locale locale) {
-        String[] statusOptions;
+        Status[] statusOptions = new Status[3];
 
         switch (locale.getLanguage()) {
             case "sv":
-                statusOptions = new String[]{"antagen", "avslagen", "obehandlad"};
+                statusOptions[0] = new Status(1, "antagen");
+                statusOptions[1] = new Status(2, "avslagen");
+                statusOptions[2] = new Status(3, "obehandlad");
                 break;
             default:
-                statusOptions = new String[]{"accepted", "rejected", "unhandled"};
+                statusOptions[0] = new Status(1, "accepted");
+                statusOptions[1] = new Status(2, "rejected");
+                statusOptions[2] = new Status(3, "unhandled");
                 break;
         }
 
