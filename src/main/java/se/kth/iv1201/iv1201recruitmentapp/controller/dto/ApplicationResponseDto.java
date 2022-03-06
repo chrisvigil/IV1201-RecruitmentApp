@@ -14,6 +14,7 @@ public class ApplicationResponseDto {
     private Application application;
     private List<Availability> availabilities;
     private List<CompetenceProfileWrapper> competenceProfileWrappers;
+    private String statusId;
 
     public Application getApplication() {
         return application;
@@ -37,6 +38,14 @@ public class ApplicationResponseDto {
 
     public void setCompetenceProfileWrappers(List<CompetenceProfileWrapper> competenceProfileWrappers) {
         this.competenceProfileWrappers = competenceProfileWrappers;
+    }
+
+    public String getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(String statusId) {
+        this.statusId = statusId;
     }
 
 }

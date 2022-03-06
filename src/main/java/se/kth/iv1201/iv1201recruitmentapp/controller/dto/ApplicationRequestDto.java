@@ -5,14 +5,14 @@ package se.kth.iv1201.iv1201recruitmentapp.controller.dto;
  * the status of an application.
  */
 public class ApplicationRequestDto {
-    private String status;
+    private String statusId;
 
-    public String getStatus() {
-        return status;
+    public String getStatusId() {
+        return statusId;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setStatusId(String statusId) {
+        this.statusId = statusId;
     }
 
 }

@@ -66,6 +66,7 @@ public class ApplicationService {
         response.setApplication(application);
         response.setAvailabilities(availabilities);
         response.setCompetenceProfileWrappers(competenceProfileWrappers);
+        response.setStatusId(parseStatusIdFromName(application.getStatus()));
 
         return response;
     }
@@ -80,6 +81,12 @@ public class ApplicationService {
         Application application = applicationRepository.getById(applicationId);
         application.setStatus(status);
         applicationRepository.save(application);
+    }
+
+    private String parseStatusIdFromName(String statusName) {
+        if (statusName.equals("accepted")) return "1";
+        if (statusName.equals("rejected")) return "2";
+        return "3";
     }
 
 }

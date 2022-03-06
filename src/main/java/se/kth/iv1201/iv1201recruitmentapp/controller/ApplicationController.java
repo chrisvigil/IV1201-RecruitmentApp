@@ -78,7 +78,7 @@ public class ApplicationController {
         if (applicationId.isEmpty())
             return "redirect:/recruiter/applications";
 
-        String status = parseStatus(applicationRequestDto);
+        String status = parseStatusNameFromId(applicationRequestDto);
         applicationService.updateApplicationStatus(applicationId.get(), status);
         setStatusOptions(model, locale);
         setApplicationData(model, locale, applicationId);
@@ -110,8 +110,8 @@ public class ApplicationController {
         model.addAttribute("statusOptions", statusOptions);
     }
 
-    private String parseStatus(ApplicationRequestDto applicationRequestDto) {
-        switch (applicationRequestDto.getStatus()) {
+    private String parseStatusNameFromId(ApplicationRequestDto applicationRequestDto) {
+        switch (applicationRequestDto.getStatusId()) {
             case "1":
                 return "accepted";
             case "2":
