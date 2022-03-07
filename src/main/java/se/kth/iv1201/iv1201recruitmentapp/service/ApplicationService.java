@@ -1,10 +1,14 @@
 package se.kth.iv1201.iv1201recruitmentapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationRequestDto;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationResponseDto;
+import se.kth.iv1201.iv1201recruitmentapp.exception.ApplicationsNameSearchFormatException;
+import se.kth.iv1201.iv1201recruitmentapp.exception.ApplicationsTimeSearchFormatException;
 import se.kth.iv1201.iv1201recruitmentapp.model.*;
 import se.kth.iv1201.iv1201recruitmentapp.repository.ApplicationRepository;
 import se.kth.iv1201.iv1201recruitmentapp.repository.AvailabilityRepository;
@@ -12,6 +16,8 @@ import se.kth.iv1201.iv1201recruitmentapp.repository.CompetenceLocalizationRepos
 import se.kth.iv1201.iv1201recruitmentapp.repository.CompetenceProfileRepository;
 
 import javax.persistence.OptimisticLockException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -35,12 +41,17 @@ public class ApplicationService {
     @Autowired
     private CompetenceLocalizationRepository competenceLocalizationRepository;
 
+    @Autowired
+    private MessageSource messageSource;
+
     /**
      * Employs the corresponding database accesses to
      * create and return an application response dto
-     * according to the given application id.
+     * according to the given application id, does
+     * so in the language specified by locale.
      *
      * @param applicationId The application id.
+     * @param locale The locale.
      * @return The application response dto.
      */
     public ApplicationResponseDto getApplicationData(int applicationId, Locale locale) {
@@ -53,10 +64,10 @@ public class ApplicationService {
         List<CompetenceProfileWrapper> competenceProfileWrappers = new LinkedList<CompetenceProfileWrapper>();
 
         for (CompetenceProfile competenceProfile : competenceProfiles) {
-            CompetenceProfileWrapper competenceProfileWrapper = new CompetenceProfileWrapper();
-
             int id = competenceProfile.getCompetence().getId();
             String loc = locale.getLanguage();
+
+            CompetenceProfileWrapper competenceProfileWrapper = new CompetenceProfileWrapper();
 
             // TODO no isPresent for optional, shouldn't be a problem since we know there will be an id and a localization?
             competenceProfileWrapper.setCompetenceName(competenceLocalizationRepository.findByCompetenceIdAndLocale(id, loc).get().getCompetenceName());
@@ -65,23 +76,27 @@ public class ApplicationService {
             competenceProfileWrappers.add(competenceProfileWrapper);
         }
 
+        Status status = makeStatusFromString(application.getStatus(), locale);
+
         response.setApplication(application);
         response.setAvailabilities(availabilities);
         response.setCompetenceProfileWrappers(competenceProfileWrappers);
-        response.setStatusId(parseStatusIdFromName(application.getStatus()));
+        response.setStatus(status);
 
         return response;
     }
 
     /**
      * Updates the database with the new application
-     * status as given.
+     * as given by the application request dto and
+     * application id.
      *
-     * @param status The status.
+     * @param applicationId The application id.
+     * @param applicationRequestDto the application request dto.
      */
-    public boolean updateApplicationStatus(int applicationId, String status) {
+    public boolean updateApplicationStatus(int applicationId, ApplicationRequestDto applicationRequestDto) {
         Application application = applicationRepository.getById(applicationId);
-        application.setStatus(status);
+        application.setStatus(applicationRequestDto.getStatus());
         try {
             applicationRepository.save(application);
             // Thread sleep
@@ -92,10 +107,27 @@ public class ApplicationService {
         }
     }
 
-    private String parseStatusIdFromName(String statusName) {
-        if (statusName.equals("accepted")) return "1";
-        if (statusName.equals("rejected")) return "2";
-        return "3";
+    private Status makeStatusFromString(String statusValue, Locale locale) {
+        Status status = new Status();
+        status.setValue(statusValue);
+
+        // TODO in application.properties?
+        Locale def = new Locale("en");
+
+        if (status.getValue().equals(messageSource.getMessage("recruiter.application.option.accepted", null, def))) {
+            status.setText(messageSource.getMessage("recruiter.application.option.accepted", null, locale));
+        }
+        else if (status.getValue().equals(messageSource.getMessage("recruiter.application.option.rejected", null, def))) {
+            status.setText(messageSource.getMessage("recruiter.application.option.rejected", null, locale));
+        }
+        else if (status.getValue().equals(messageSource.getMessage("recruiter.application.option.unhandled", null, def))) {
+            status.setText(messageSource.getMessage("recruiter.application.option.unhandled", null, locale));
+        }
+        else {
+            status.setText(statusValue);
+        }
+
+        return status;
     }
 
 }

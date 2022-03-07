@@ -4,28 +4,23 @@ package se.kth.iv1201.iv1201recruitmentapp.model;
  * Class to represent a status.
  */
 public class Status {
-    private int id;
-    private String status;
+    private String value;
+    private String text;
 
-    public Status(int id, String status) {
-        this.id = id;
-        this.status = status;
+    public String getValue() {
+        return value;
     }
 
-    public int getId() {
-        return id;
+    public void setValue(String value) {
+        this.value = value;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getText() {
+        return text;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    public void setText(String text) {
+        this.text = text;
     }
 
 }

@@ -41,9 +41,11 @@ public class ApplicationsController {
 
     /**
      * Get request for the recruiter applications page.
-     * Will display the initial page without any search results.
+     * Will display the initial page without any search results,
+     * does so in the language specified by locale.
      *
      * @param model Model object used by the applications page.
+     * @param locale The locale.
      * @return The recruiter applications page.
      */
     @GetMapping()
@@ -58,9 +60,11 @@ public class ApplicationsController {
      * Post request for the recruiter applications search
      * page. Adds the applications search results as a model
      * attribute. Will display the search results on the
-     * recruiter applications page if any.
+     * recruiter applications page if any, in the language
+     * specified by locale.
      *
      * @param model Model object used by the applications page.
+     * @param locale The locale.
      * @param applicationsRequestDto The applications request dto.
      * @return The recruiter applications search result page.
      */
@@ -84,16 +88,6 @@ public class ApplicationsController {
     }
 
     private void setSelectOptionsModelAttributes(Model model, Locale locale) {
-        /*String[] searchOptions;
-
-        switch (locale.getLanguage()) {
-            case "sv":
-                searchOptions = new String[]{"namn", "kompetens", "tid"};
-                break;
-            default:
-                searchOptions = new String[]{"name", "competence", "time"};
-        }*/
-
         // TODO put this in application.properties?
         Locale def = new Locale("en");
         String[] searchOptionsValue = new String[]{

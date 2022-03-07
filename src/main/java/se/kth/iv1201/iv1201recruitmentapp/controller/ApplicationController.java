@@ -1,11 +1,13 @@
 package se.kth.iv1201.iv1201recruitmentapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationRequestDto;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationResponseDto;
+import se.kth.iv1201.iv1201recruitmentapp.model.SearchOption;
 import se.kth.iv1201.iv1201recruitmentapp.model.Status;
 import se.kth.iv1201.iv1201recruitmentapp.service.ApplicationService;
 
@@ -21,6 +23,9 @@ public class ApplicationController {
 
     @Autowired
     private ApplicationService applicationService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     /**
      * Creates an application request dto for the current
@@ -77,8 +82,9 @@ public class ApplicationController {
         if (applicationId.isEmpty())
             return "redirect:/recruiter/applications";
 
-        String status = parseStatusNameFromId(applicationRequestDto);
-        boolean success = applicationService.updateApplicationStatus(applicationId.get(), status);
+        //String status = parseStatusNameFromId(applicationRequestDto);
+        // TODO isPresent?
+        boolean success = applicationService.updateApplicationStatus(applicationId.get(), applicationRequestDto);
 
         if (success) {
             setStatusOptions(model, locale);
@@ -98,36 +104,31 @@ public class ApplicationController {
     }
 
     private void setStatusOptions(Model model, Locale locale) {
-        Status[] statusOptions = new Status[3];
+        // TODO put this in application.properties?
+        Locale def = new Locale("en");
+        String[] statusOptionsValue = new String[]{
+                messageSource.getMessage("recruiter.application.option.accepted", null, def),
+                messageSource.getMessage("recruiter.application.option.rejected", null, def),
+                messageSource.getMessage("recruiter.application.option.unhandled", null, def)
+        };
 
-        switch (locale.getLanguage()) {
-            case "sv":
-                statusOptions[0] = new Status(1, "antagen");
-                statusOptions[1] = new Status(2, "avslagen");
-                statusOptions[2] = new Status(3, "obehandlad");
-                break;
-            default:
-                statusOptions[0] = new Status(1, "accepted");
-                statusOptions[1] = new Status(2, "rejected");
-                statusOptions[2] = new Status(3, "unhandled");
-                break;
+        String[] statusOptionsText = new String[]{
+                messageSource.getMessage("recruiter.application.option.accepted", null, locale),
+                messageSource.getMessage("recruiter.application.option.rejected", null, locale),
+                messageSource.getMessage("recruiter.application.option.unhandled", null, locale)
+        };
+
+        Status[] statusOptions = new Status[statusOptionsValue.length];
+        for (int i = 0; i < statusOptions.length; i++) {
+            Status status = new Status();
+
+            status.setValue(statusOptionsValue[i]);
+            status.setText(statusOptionsText[i]);
+
+            statusOptions[i] = status;
         }
 
         model.addAttribute("statusOptions", statusOptions);
-    }
-
-    private String parseStatusNameFromId(ApplicationRequestDto applicationRequestDto) {
-        switch (applicationRequestDto.getStatusId()) {
-            case "1":
-                return "accepted";
-            case "2":
-                return "rejected";
-            case "3":
-                return "unhandled";
-            default:
-                // TODO error handling?
-                return "unhandled";
-        }
     }
 
 }
