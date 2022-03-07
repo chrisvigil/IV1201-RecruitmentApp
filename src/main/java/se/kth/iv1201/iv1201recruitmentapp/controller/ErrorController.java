@@ -17,7 +17,7 @@ public class ErrorController {
      * @return The error page.
      */
     @GetMapping("/error/dbConnectionError")
-    public String dbError () { return "/error/dbConnectionError";}
+    public String dbError () { return "error/dbConnectionError";}
 
 
     /**
