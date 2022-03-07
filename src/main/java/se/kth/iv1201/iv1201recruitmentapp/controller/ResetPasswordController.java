@@ -1,5 +1,7 @@
 package se.kth.iv1201.iv1201recruitmentapp.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -33,6 +35,8 @@ public class ResetPasswordController {
 
     @Autowired
     private MessageSource messageSource;
+
+    private Logger logger = LoggerFactory.getLogger("password-reset");
 
     /**
      * Creates the change password form backing object
@@ -70,6 +74,7 @@ public class ResetPasswordController {
             emailService.sendEmail(email, subject, body);
         }
 
+        logger.info("Password request done for user with email: " + email);
         return "resetPassword/requestSubmitted";
     }
 
@@ -122,8 +127,10 @@ public class ResetPasswordController {
 
         boolean success = userService.resetPasswordWithToken(changePasswordDto);
 
-        if(success)
+        if(success) {
+            logger.info("A user has reset their password.");
             return "resetPassword/changeSuccess";
+        }
         else
             return "redirect:/resetPassword?invalidToken";
     }
