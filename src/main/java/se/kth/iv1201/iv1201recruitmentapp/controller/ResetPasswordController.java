@@ -1,8 +1,7 @@
 package se.kth.iv1201.iv1201recruitmentapp.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import se.kth.iv1201.iv1201recruitmentapp.Util.ResetPasswordLoggingEvent;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ChangePasswordDto;
 import se.kth.iv1201.iv1201recruitmentapp.service.EmailService;
 import se.kth.iv1201.iv1201recruitmentapp.service.SecurityUserDetailService;
@@ -36,7 +36,8 @@ public class ResetPasswordController {
     @Autowired
     private MessageSource messageSource;
 
-    private Logger logger = LoggerFactory.getLogger("password-reset");
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     /**
      * Creates the change password form backing object
@@ -74,7 +75,7 @@ public class ResetPasswordController {
             emailService.sendEmail(email, subject, body);
         }
 
-        logger.info("Password request done for user with email: " + email);
+        publisher.publishEvent(new ResetPasswordLoggingEvent(ResetPasswordLoggingEvent.ResetPasswordLoggingEnum.REQUEST, email));
         return "resetPassword/requestSubmitted";
     }
 
@@ -128,7 +129,7 @@ public class ResetPasswordController {
         boolean success = userService.resetPasswordWithToken(changePasswordDto);
 
         if(success) {
-            logger.info("A user has reset their password.");
+            publisher.publishEvent(new ResetPasswordLoggingEvent(ResetPasswordLoggingEvent.ResetPasswordLoggingEnum.SUCCESS, ""));
             return "resetPassword/changeSuccess";
         }
         else

@@ -1,8 +1,7 @@
 package se.kth.iv1201.iv1201recruitmentapp.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import se.kth.iv1201.iv1201recruitmentapp.Util.RegistrationLoggingEvent;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.UserRegistrationDto;
 import se.kth.iv1201.iv1201recruitmentapp.service.SecurityUserDetailService;
 
@@ -25,7 +25,8 @@ public class UserRegistrationController {
     @Autowired
     private SecurityUserDetailService userService;
 
-    private Logger logger = LoggerFactory.getLogger("registration");
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     /**
      * Creates a user registration dto for the current user.
@@ -61,7 +62,7 @@ public class UserRegistrationController {
             return "registration";
         try {
             userService.createUser(userDto);
-            logger.info("A new user with username: " + userDto.getUsername() + " has registered.");
+            publisher.publishEvent(new RegistrationLoggingEvent(userDto.getUsername()));
         return "success";
         } catch (Exception ex) {
             return "redirect:registration?regError"; //TODO handle error correctly
