@@ -55,7 +55,6 @@ public class ApplicationController {
         return "recruiter/application";
     }
 
-
     /**
      * Post request for the recruiter application page.
      * Will update the status of an application as
@@ -79,11 +78,18 @@ public class ApplicationController {
             return "redirect:/recruiter/applications";
 
         String status = parseStatusNameFromId(applicationRequestDto);
-        applicationService.updateApplicationStatus(applicationId.get(), status);
-        setStatusOptions(model, locale);
-        setApplicationData(model, locale, applicationId);
+        boolean success = applicationService.updateApplicationStatus(applicationId.get(), status);
 
-        return "recruiter/application";
+        if (success) {
+            setStatusOptions(model, locale);
+            setApplicationData(model, locale, applicationId);
+
+            return "recruiter/application";
+        }
+        else {
+            return "redirect:/recruiter/application?updateError&applicationId=" + applicationId;
+        }
+
     }
 
     private void setApplicationData(Model model, Locale locale, Optional<Integer> applicationId) {

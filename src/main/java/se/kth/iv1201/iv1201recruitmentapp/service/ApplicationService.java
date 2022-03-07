@@ -1,9 +1,9 @@
 package se.kth.iv1201.iv1201recruitmentapp.service;
 
-import net.bytebuddy.dynamic.scaffold.MethodGraph;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationRequestDto;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationResponseDto;
 import se.kth.iv1201.iv1201recruitmentapp.model.*;
 import se.kth.iv1201.iv1201recruitmentapp.repository.ApplicationRepository;
@@ -11,6 +11,7 @@ import se.kth.iv1201.iv1201recruitmentapp.repository.AvailabilityRepository;
 import se.kth.iv1201.iv1201recruitmentapp.repository.CompetenceLocalizationRepository;
 import se.kth.iv1201.iv1201recruitmentapp.repository.CompetenceProfileRepository;
 
+import javax.persistence.OptimisticLockException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -19,6 +20,7 @@ import java.util.Locale;
  * Service for retrieving application information.
  */
 @Service
+@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
 public class ApplicationService {
 
     @Autowired
@@ -77,10 +79,17 @@ public class ApplicationService {
      *
      * @param status The status.
      */
-    public void updateApplicationStatus(int applicationId, String status) {
+    public boolean updateApplicationStatus(int applicationId, String status) {
         Application application = applicationRepository.getById(applicationId);
         application.setStatus(status);
-        applicationRepository.save(application);
+        try {
+            applicationRepository.save(application);
+            // Thread sleep
+            return true;
+        }
+        catch (OptimisticLockException e) {
+            return false;
+        }
     }
 
     private String parseStatusIdFromName(String statusName) {

@@ -3,6 +3,8 @@ package se.kth.iv1201.iv1201recruitmentapp.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationsRequestDto;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationsResponseDto;
 import se.kth.iv1201.iv1201recruitmentapp.exception.ApplicationsNameSearchFormatException;
@@ -23,6 +25,7 @@ import java.util.List;
  * Service for retrieving applications.
  */
 @Service
+@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
 public class ApplicationsService {
 
     @Autowired
@@ -83,7 +86,6 @@ public class ApplicationsService {
         List<Application> results;
 
         // TODO ok? (yucky code but works)
-        // TODO also the javascript code creates a view bug, probably ok...
         if (searchType.equals("namn")) searchType = "name";
         if (searchType.equals("kompetens")) searchType = "competence";
         if (searchType.equals("tid")) searchType = "time";
