@@ -1,6 +1,7 @@
 package se.kth.iv1201.iv1201recruitmentapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +10,7 @@ import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationsResponseDto
 import se.kth.iv1201.iv1201recruitmentapp.exception.ApplicationsNameSearchFormatException;
 import se.kth.iv1201.iv1201recruitmentapp.exception.ApplicationsTimeSearchFormatException;
 import se.kth.iv1201.iv1201recruitmentapp.model.Competence;
+import se.kth.iv1201.iv1201recruitmentapp.model.SearchOption;
 import se.kth.iv1201.iv1201recruitmentapp.service.ApplicationsService;
 
 import java.util.List;
@@ -23,6 +25,9 @@ public class ApplicationsController {
 
     @Autowired
     private ApplicationsService applicationsService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     /**
      * Creates an applications request dto for the current user.
@@ -44,6 +49,8 @@ public class ApplicationsController {
     @GetMapping()
     public String showApplicationSearchForm(Model model, Locale locale) {
         setSelectOptionsModelAttributes(model, locale);
+        setCompetencesModelAttribute(model);
+
         return "recruiter/applications";
     }
 
@@ -61,6 +68,7 @@ public class ApplicationsController {
     public String showApplicationSearchResults(Model model, Locale locale, @ModelAttribute("applicationsRequest") ApplicationsRequestDto applicationsRequestDto) {
         try {
             setSelectOptionsModelAttributes(model, locale);
+            setCompetencesModelAttribute(model);
 
             ApplicationsResponseDto response = applicationsService.getApplicationsSearchResults(applicationsRequestDto);
             model.addAttribute("applicationsResults", response);
@@ -76,7 +84,7 @@ public class ApplicationsController {
     }
 
     private void setSelectOptionsModelAttributes(Model model, Locale locale) {
-        String[] searchOptions;
+        /*String[] searchOptions;
 
         switch (locale.getLanguage()) {
             case "sv":
@@ -84,10 +92,36 @@ public class ApplicationsController {
                 break;
             default:
                 searchOptions = new String[]{"name", "competence", "time"};
+        }*/
+
+        // TODO put this in application.properties?
+        Locale def = new Locale("en");
+        String[] searchOptionsValue = new String[]{
+            messageSource.getMessage("recruiter.applications.name", null, def),
+            messageSource.getMessage("recruiter.applications.competence", null, def),
+            messageSource.getMessage("recruiter.applications.time", null, def)
+        };
+
+        String[] searchOptionsText = new String[]{
+            messageSource.getMessage("recruiter.applications.name", null, locale),
+            messageSource.getMessage("recruiter.applications.competence", null, locale),
+            messageSource.getMessage("recruiter.applications.time", null, locale)
+        };
+
+        SearchOption[] searchOptions = new SearchOption[searchOptionsValue.length];
+        for (int i = 0; i < searchOptions.length; i++) {
+            SearchOption searchOption = new SearchOption();
+
+            searchOption.setValue(searchOptionsValue[i]);
+            searchOption.setText(searchOptionsText[i]);
+
+            searchOptions[i] = searchOption;
         }
 
-        model.addAttribute("applicationSearchOptions", searchOptions);
+        model.addAttribute("applicationsSearchOptions", searchOptions);
+    }
 
+    private void setCompetencesModelAttribute(Model model) {
         List<Competence> competences = applicationsService.getCompetences();
         model.addAttribute("competences", competences);
     }

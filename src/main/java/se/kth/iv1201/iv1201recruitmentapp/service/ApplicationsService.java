@@ -1,6 +1,7 @@
 package se.kth.iv1201.iv1201recruitmentapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Service for retrieving applications.
@@ -36,6 +38,9 @@ public class ApplicationsService {
 
     @Autowired
     private CompetenceRepository competenceRepository;
+
+    @Autowired
+    private MessageSource messageSource;
 
     /**
      * Employs the corresponding database actions
@@ -85,39 +90,35 @@ public class ApplicationsService {
 
         List<Application> results;
 
-        // TODO ok? (yucky code but works)
-        if (searchType.equals("namn")) searchType = "name";
-        if (searchType.equals("kompetens")) searchType = "competence";
-        if (searchType.equals("tid")) searchType = "time";
+        // TODO in message.properties?
+        Locale def = new Locale("en");
 
-        switch (searchType) {
-            case "name" -> {
-                String[] names = searchName.split(" ");
+        if (searchType.equals(messageSource.getMessage("recruiter.applications.name", null, def))) {
+            String[] names = searchName.split(" ");
 
-                try {
-                    results = applicationRepository.findAllByName(names[0], names[1]);
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    throw new ApplicationsNameSearchFormatException("Invalid name format");
-                }
+            try {
+                results = applicationRepository.findAllByName(names[0], names[1]);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                throw new ApplicationsNameSearchFormatException("Invalid name format");
             }
-            case "competence" -> {
-                results = applicationRepository.findAllByCompetence(Integer.parseInt(searchCompetence));
-            }
-            case "time" -> {
-                String[] dates = searchTime.split(" ");
+        }
+        else if (searchType.equals(messageSource.getMessage("recruiter.applications.competence", null, def))) {
+            results = applicationRepository.findAllByCompetence(Integer.parseInt(searchCompetence));
+        }
+        else if (searchType.equals(messageSource.getMessage("recruiter.applications.time", null, def))) {
+            String[] dates = searchTime.split(" ");
 
-                try {
-                    LocalDate from_date = LocalDate.parse(dates[0]);
-                    LocalDate to_date = LocalDate.parse(dates[1]);
+            try {
+                LocalDate from_date = LocalDate.parse(dates[0]);
+                LocalDate to_date = LocalDate.parse(dates[1]);
 
-                    results = applicationRepository.findAllByTime(from_date, to_date);
-                } catch (DateTimeParseException e) {
-                    throw new ApplicationsTimeSearchFormatException("Invalid time format");
-                }
+                results = applicationRepository.findAllByTime(from_date, to_date);
+            } catch (DateTimeParseException e) {
+                throw new ApplicationsTimeSearchFormatException("Invalid time format");
             }
-            default -> {
-                results = null;
-            }
+        }
+        else {
+            results = null;
         }
 
         response.setApplications(results);
