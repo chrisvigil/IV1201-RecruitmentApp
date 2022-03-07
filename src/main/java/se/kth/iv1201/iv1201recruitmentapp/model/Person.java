@@ -36,6 +36,18 @@ public class Person {
     @Column(name = "username")
     private String username;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reset_password_token_id")
+    private ResetPasswordToken resetPasswordToken;
+
+    public ResetPasswordToken getResetPasswordToken() {
+        return resetPasswordToken;
+    }
+
+    public void setResetPasswordToken(ResetPasswordToken resetPasswordToken) {
+        this.resetPasswordToken = resetPasswordToken;
+    }
+
     public String getUsername() {
         return username;
     }
