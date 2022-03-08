@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationRequestDto;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationResponseDto;
-import se.kth.iv1201.iv1201recruitmentapp.model.SearchOption;
+import se.kth.iv1201.iv1201recruitmentapp.exception.ApplicationNonexistentException;
 import se.kth.iv1201.iv1201recruitmentapp.model.Status;
 import se.kth.iv1201.iv1201recruitmentapp.service.ApplicationService;
 
@@ -59,7 +59,7 @@ public class ApplicationController {
             return "redirect:/recruiter/applications";
 
         setStatusOptions(model, locale);
-        setApplicationData(model, locale, applicationId);
+        setApplicationData(model, locale, applicationId.get());
 
         return "recruiter/application";
     }
@@ -86,24 +86,31 @@ public class ApplicationController {
         if (applicationId.isEmpty())
             return "redirect:/recruiter/applications";
 
-        //String status = parseStatusNameFromId(applicationRequestDto);
-        // TODO isPresent?
-        boolean success = applicationService.updateApplicationStatus(applicationId.get(), applicationRequestDto);
+        boolean success = false;
+        try {
+            success = applicationService.updateApplicationStatus(applicationId.get(), applicationRequestDto);
+        }
+        catch (ApplicationNonexistentException e) {
+            return "redirect:/recruiter/applications?applicationNonexistent";
+        }
+
+        setStatusOptions(model, locale);
+        setApplicationData(model, locale, applicationId.get());
 
         if (success) {
-            setStatusOptions(model, locale);
-            setApplicationData(model, locale, applicationId);
-
-            return "recruiter/application";
+            // TODO logging
+            //return "recruiter/application";
         }
         else {
-            return "redirect:/recruiter/application?updateError&applicationId=" + applicationId;
+            //return "redirect:/recruiter/application?updateError&applicationId=" + applicationId.get();
+            model.addAttribute("updateError", true);
         }
 
+        return "recruiter/application";
     }
 
-    private void setApplicationData(Model model, Locale locale, Optional<Integer> applicationId) {
-        ApplicationResponseDto response = applicationService.getApplicationData(applicationId.get(), locale);
+    private void setApplicationData(Model model, Locale locale, int applicationId) {
+        ApplicationResponseDto response = applicationService.getApplicationData(applicationId, locale);
         model.addAttribute("applicationData", response);
     }
 

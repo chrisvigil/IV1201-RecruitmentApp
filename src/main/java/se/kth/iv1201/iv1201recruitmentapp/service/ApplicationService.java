@@ -1,13 +1,16 @@
 package se.kth.iv1201.iv1201recruitmentapp.service;
 
+import org.hibernate.annotations.OptimisticLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationRequestDto;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationResponseDto;
+import se.kth.iv1201.iv1201recruitmentapp.exception.ApplicationNonexistentException;
 import se.kth.iv1201.iv1201recruitmentapp.model.*;
 import se.kth.iv1201.iv1201recruitmentapp.repository.ApplicationRepository;
 import se.kth.iv1201.iv1201recruitmentapp.repository.AvailabilityRepository;
@@ -18,6 +21,7 @@ import javax.persistence.OptimisticLockException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 /**
  * Service for retrieving application information.
@@ -49,6 +53,8 @@ public class ApplicationService {
      * create and return an application response dto
      * according to the given application id, does
      * so in the language specified by locale.
+     * If the application does not exist, null is
+     * returned to the caller.
      *
      * @param applicationId The application id.
      * @param locale The locale.
@@ -57,11 +63,15 @@ public class ApplicationService {
     public ApplicationResponseDto getApplicationData(int applicationId, Locale locale) {
         ApplicationResponseDto response = new ApplicationResponseDto();
 
-        Application application = applicationRepository.getById(applicationId);
+        Optional<Application> optionalApplication = applicationRepository.findById(applicationId);
+        if (optionalApplication.isEmpty()) {
+            return null;
+        }
+
+        Application application = optionalApplication.get();
         List<Availability> availabilities = availabilityRepository.getAvailabilityByApplicationId(applicationId);
         List<CompetenceProfile> competenceProfiles = competenceProfileRepository.getCompetenceProfileById(applicationId);
-
-        List<CompetenceProfileWrapper> competenceProfileWrappers = new LinkedList<CompetenceProfileWrapper>();
+        List<CompetenceProfileWrapper> competenceProfileWrapperList = new LinkedList<CompetenceProfileWrapper>();
 
         for (CompetenceProfile competenceProfile : competenceProfiles) {
             int id = competenceProfile.getCompetence().getId();
@@ -69,18 +79,27 @@ public class ApplicationService {
 
             CompetenceProfileWrapper competenceProfileWrapper = new CompetenceProfileWrapper();
 
-            // TODO no isPresent for optional, shouldn't be a problem since we know there will be an id and a localization?
-            competenceProfileWrapper.setCompetenceName(competenceLocalizationRepository.findByCompetenceIdAndLocale(id, loc).get().getCompetenceName());
+            Optional<CompetenceLocalization> competenceLocalization = competenceLocalizationRepository.findByCompetenceIdAndLocale(id, loc);
+
+            String competenceName;
+            if (competenceLocalization.isPresent()) {
+                competenceName = competenceLocalization.get().getCompetenceName();
+            }
+            else {
+                competenceName = competenceLocalizationRepository.findByCompetenceIdAndLocale(id, environment.getProperty("default.language")).get().getCompetenceName();
+            }
+
+            competenceProfileWrapper.setCompetenceName(competenceName);
             competenceProfileWrapper.setCompetenceProfile(competenceProfile);
 
-            competenceProfileWrappers.add(competenceProfileWrapper);
+            competenceProfileWrapperList.add(competenceProfileWrapper);
         }
 
         Status status = makeStatusFromString(application.getStatus(), locale);
 
         response.setApplication(application);
         response.setAvailabilities(availabilities);
-        response.setCompetenceProfileWrappers(competenceProfileWrappers);
+        response.setCompetenceProfileWrappers(competenceProfileWrapperList);
         response.setStatus(status);
 
         return response;
@@ -93,16 +112,26 @@ public class ApplicationService {
      *
      * @param applicationId The application id.
      * @param applicationRequestDto the application request dto.
+     * @throws ApplicationNonexistentException If the application no longer exists in the database.
+     * @return True if successfully updated status in database,
+     *         false if the application was changed between reading and saving.
      */
-    public boolean updateApplicationStatus(int applicationId, ApplicationRequestDto applicationRequestDto) {
-        Application application = applicationRepository.getById(applicationId);
-        application.setStatus(applicationRequestDto.getStatus());
-        try {
+    public boolean updateApplicationStatus(int applicationId, ApplicationRequestDto applicationRequestDto)
+            throws ApplicationNonexistentException {
+
+        Optional<Application> optionalApplication = applicationRepository.findById(applicationId);
+        if (optionalApplication.isEmpty()) {
+            throw new ApplicationNonexistentException("Application is no longer in the database");
+        }
+
+        Application application = optionalApplication.get();
+
+        if (application.getVersion() == applicationRequestDto.getOldVersion()) {
+            application.setStatus(applicationRequestDto.getStatus());
             applicationRepository.save(application);
-            // Thread sleep
             return true;
         }
-        catch (OptimisticLockException e) {
+        else {
             return false;
         }
     }
@@ -115,14 +144,11 @@ public class ApplicationService {
 
         if (status.getValue().equals(messageSource.getMessage("recruiter.application.option.accepted", null, def))) {
             status.setText(messageSource.getMessage("recruiter.application.option.accepted", null, locale));
-        }
-        else if (status.getValue().equals(messageSource.getMessage("recruiter.application.option.rejected", null, def))) {
+        } else if (status.getValue().equals(messageSource.getMessage("recruiter.application.option.rejected", null, def))) {
             status.setText(messageSource.getMessage("recruiter.application.option.rejected", null, locale));
-        }
-        else if (status.getValue().equals(messageSource.getMessage("recruiter.application.option.unhandled", null, def))) {
+        } else if (status.getValue().equals(messageSource.getMessage("recruiter.application.option.unhandled", null, def))) {
             status.setText(messageSource.getMessage("recruiter.application.option.unhandled", null, locale));
-        }
-        else {
+        } else {
             status.setText(statusValue);
         }
 

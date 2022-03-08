@@ -83,8 +83,12 @@ public class ApplicationsService {
      *
      * @param applicationsRequestDto The applications request dto.
      * @return The applications response dto.
+     * @throws ApplicationsNameSearchFormatException If the name was formatted incorrectly.
+     * @throws ApplicationsTimeSearchFormatException If the time was formatted incorrectly.
      */
-    public ApplicationsResponseDto getApplicationsSearchResults(ApplicationsRequestDto applicationsRequestDto) {
+    public ApplicationsResponseDto getApplicationsSearchResults(ApplicationsRequestDto applicationsRequestDto)
+            throws ApplicationsNameSearchFormatException, ApplicationsTimeSearchFormatException {
+
         ApplicationsResponseDto response = new ApplicationsResponseDto();
 
         String searchType = applicationsRequestDto.getSearchType();

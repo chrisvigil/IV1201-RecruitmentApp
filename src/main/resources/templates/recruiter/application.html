@@ -11,6 +11,9 @@
     <div class="container pt-4">
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
+                <div th:if="${updateError}">
+                    <div class="alert alert-danger" th:text="#{recruiter.application.updateerror}">The application has been changed by someone else</div>
+                </div>
                 <h1 th:text="#{recruiter.application.title}" class="mb-5">Application</h1>
                 <h2 th:text="${applicationData.application.person.name} + ' ' + ${applicationData.application.person.surname}" class="mb-4">Name Surname</h2>
                 <h5 th:text="#{recruiter.application.available}">Available</h5>
@@ -53,6 +56,7 @@
                                     th:selected="${applicationData.status.value.toString().equals(option.value.toString())}">
                             </option>
                         </select>
+                        <input type="hidden" th:value="${applicationData.application.version}" th:id="oldVersion" th:name="oldVersion">
                     </div>
                     <div>
                         <button type="submit" class="btn btn-primary" th:text="#{recruiter.application.save}">Save</button>

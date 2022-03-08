@@ -57,6 +57,4 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
      */
     Optional<Application> findById(int id);
 
-
-
 }

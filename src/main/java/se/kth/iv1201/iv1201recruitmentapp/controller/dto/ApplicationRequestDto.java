@@ -6,6 +6,7 @@ package se.kth.iv1201.iv1201recruitmentapp.controller.dto;
  */
 public class ApplicationRequestDto {
     private String status;
+    private long oldVersion;
 
     public String getStatus() {
         return status;
@@ -13,6 +14,14 @@ public class ApplicationRequestDto {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public long getOldVersion() {
+        return oldVersion;
+    }
+
+    public void setOldVersion(long oldVersion) {
+        this.oldVersion = oldVersion;
     }
 
 }
