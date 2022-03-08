@@ -28,8 +28,8 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
      * @param request the request during which the authentication attempt occurred.
      * @param response the response.
      * @param exception the exception which was thrown to reject the authentication request.
-     * @throws IOException
-     * @throws ServletException
+     * @throws IOException Not handled in this method so is thrown again
+     * @throws ServletException Not handled in this method so is thrown again
      */
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
