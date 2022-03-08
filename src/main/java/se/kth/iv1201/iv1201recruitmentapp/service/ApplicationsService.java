@@ -3,6 +3,7 @@ package se.kth.iv1201.iv1201recruitmentapp.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +42,9 @@ public class ApplicationsService {
 
     @Autowired
     private MessageSource messageSource;
+
+    @Autowired
+    private Environment environment;
 
     /**
      * Employs the corresponding database actions
@@ -90,8 +94,7 @@ public class ApplicationsService {
 
         List<Application> results;
 
-        // TODO in message.properties?
-        Locale def = new Locale("en");
+        Locale def = new Locale(environment.getProperty("default.language"));
 
         if (searchType.equals(messageSource.getMessage("recruiter.applications.name", null, def))) {
             String[] names = searchName.split(" ");

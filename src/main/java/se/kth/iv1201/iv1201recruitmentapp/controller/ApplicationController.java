@@ -2,6 +2,7 @@ package se.kth.iv1201.iv1201recruitmentapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,9 @@ public class ApplicationController {
 
     @Autowired
     private MessageSource messageSource;
+
+    @Autowired
+    private Environment environment;
 
     /**
      * Creates an application request dto for the current
@@ -104,8 +108,8 @@ public class ApplicationController {
     }
 
     private void setStatusOptions(Model model, Locale locale) {
-        // TODO put this in application.properties?
-        Locale def = new Locale("en");
+        Locale def = new Locale(environment.getProperty("default.language"));
+
         String[] statusOptionsValue = new String[]{
                 messageSource.getMessage("recruiter.application.option.accepted", null, def),
                 messageSource.getMessage("recruiter.application.option.rejected", null, def),

@@ -2,13 +2,12 @@ package se.kth.iv1201.iv1201recruitmentapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationRequestDto;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationResponseDto;
-import se.kth.iv1201.iv1201recruitmentapp.exception.ApplicationsNameSearchFormatException;
-import se.kth.iv1201.iv1201recruitmentapp.exception.ApplicationsTimeSearchFormatException;
 import se.kth.iv1201.iv1201recruitmentapp.model.*;
 import se.kth.iv1201.iv1201recruitmentapp.repository.ApplicationRepository;
 import se.kth.iv1201.iv1201recruitmentapp.repository.AvailabilityRepository;
@@ -16,8 +15,6 @@ import se.kth.iv1201.iv1201recruitmentapp.repository.CompetenceLocalizationRepos
 import se.kth.iv1201.iv1201recruitmentapp.repository.CompetenceProfileRepository;
 
 import javax.persistence.OptimisticLockException;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -43,6 +40,9 @@ public class ApplicationService {
 
     @Autowired
     private MessageSource messageSource;
+
+    @Autowired
+    private Environment environment;
 
     /**
      * Employs the corresponding database accesses to
@@ -111,8 +111,7 @@ public class ApplicationService {
         Status status = new Status();
         status.setValue(statusValue);
 
-        // TODO in application.properties?
-        Locale def = new Locale("en");
+        Locale def = new Locale(environment.getProperty("default.language"));
 
         if (status.getValue().equals(messageSource.getMessage("recruiter.application.option.accepted", null, def))) {
             status.setText(messageSource.getMessage("recruiter.application.option.accepted", null, locale));
