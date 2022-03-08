@@ -58,7 +58,6 @@
                             <tr>
                                 <th th:text="#{recruiter.applications.results.table.firstname}">First name</th>
                                 <th th:text="#{recruiter.applications.results.table.surname}">Surname</th>
-                                <th th:text="#{recruiter.applications.results.table.status}">Status</th>
                                 <th th:text="#{recruiter.applications.results.table.view}">View</th>
                             </tr>
                         </thead>
@@ -66,7 +65,6 @@
                             <tr th:each="results: ${applicationsResults.applications}" href="#" th:href="@{/recruiter/application}">
                                 <td><div th:text="${results.person.name}" class="me-5">Name</div></td>
                                 <td><div th:text="${results.person.surname}" class="me-5">Surname</div></td>
-                                <td><div th:text="${results.status}" class="me-5">Status</div></td>
                                 <td>
                                     <a href="#" th:href="@{/recruiter/application(applicationId=${results.id})}" th:text="#{recruiter.applications.results.table.view}">View</a>
                                 </td>
