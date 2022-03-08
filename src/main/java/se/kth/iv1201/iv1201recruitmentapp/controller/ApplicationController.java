@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationRequestDto;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationResponseDto;
 import se.kth.iv1201.iv1201recruitmentapp.exception.ApplicationNonexistentException;
-import se.kth.iv1201.iv1201recruitmentapp.model.Status;
+import se.kth.iv1201.iv1201recruitmentapp.model.StatusWrapper;
 import se.kth.iv1201.iv1201recruitmentapp.service.ApplicationService;
 
 import java.util.Locale;
@@ -99,10 +99,8 @@ public class ApplicationController {
 
         if (success) {
             // TODO logging
-            //return "recruiter/application";
         }
         else {
-            //return "redirect:/recruiter/application?updateError&applicationId=" + applicationId.get();
             model.addAttribute("updateError", true);
         }
 
@@ -129,17 +127,17 @@ public class ApplicationController {
                 messageSource.getMessage("recruiter.application.option.unhandled", null, locale)
         };
 
-        Status[] statusOptions = new Status[statusOptionsValue.length];
-        for (int i = 0; i < statusOptions.length; i++) {
-            Status status = new Status();
+        StatusWrapper[] statusWrapperOptions = new StatusWrapper[statusOptionsValue.length];
+        for (int i = 0; i < statusWrapperOptions.length; i++) {
+            StatusWrapper statusWrapper = new StatusWrapper();
 
-            status.setValue(statusOptionsValue[i]);
-            status.setText(statusOptionsText[i]);
+            statusWrapper.setValue(statusOptionsValue[i]);
+            statusWrapper.setText(statusOptionsText[i]);
 
-            statusOptions[i] = status;
+            statusWrapperOptions[i] = statusWrapper;
         }
 
-        model.addAttribute("statusOptions", statusOptions);
+        model.addAttribute("statusOptions", statusWrapperOptions);
     }
 
 }

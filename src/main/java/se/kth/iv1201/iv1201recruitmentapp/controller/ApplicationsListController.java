@@ -6,13 +6,13 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationsRequestDto;
-import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationsResponseDto;
+import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationsListRequestDto;
+import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationsListResponseDto;
 import se.kth.iv1201.iv1201recruitmentapp.exception.ApplicationsNameSearchFormatException;
 import se.kth.iv1201.iv1201recruitmentapp.exception.ApplicationsTimeSearchFormatException;
 import se.kth.iv1201.iv1201recruitmentapp.model.Competence;
-import se.kth.iv1201.iv1201recruitmentapp.model.SearchOption;
-import se.kth.iv1201.iv1201recruitmentapp.service.ApplicationsService;
+import se.kth.iv1201.iv1201recruitmentapp.model.SearchOptionWrapper;
+import se.kth.iv1201.iv1201recruitmentapp.service.ApplicationsListService;
 
 import java.util.List;
 import java.util.Locale;
@@ -22,10 +22,10 @@ import java.util.Locale;
  */
 @Controller
 @RequestMapping("/recruiter/applications")
-public class ApplicationsController {
+public class ApplicationsListController {
 
     @Autowired
-    private ApplicationsService applicationsService;
+    private ApplicationsListService applicationsListService;
 
     @Autowired
     private MessageSource messageSource;
@@ -39,8 +39,8 @@ public class ApplicationsController {
      * @return The applications request dto.
      */
     @ModelAttribute("applicationsRequest")
-    public ApplicationsRequestDto applicationsDto() {
-        return new ApplicationsRequestDto();
+    public ApplicationsListRequestDto applicationsDto() {
+        return new ApplicationsListRequestDto();
     }
 
     /**
@@ -69,16 +69,16 @@ public class ApplicationsController {
      *
      * @param model Model object used by the applications page.
      * @param locale The locale.
-     * @param applicationsRequestDto The applications request dto.
+     * @param applicationsListRequestDto The applications request dto.
      * @return The recruiter applications search result page.
      */
     @PostMapping()
-    public String showApplicationSearchResults(Model model, Locale locale, @ModelAttribute("applicationsRequest") ApplicationsRequestDto applicationsRequestDto) {
+    public String showApplicationSearchResults(Model model, Locale locale, @ModelAttribute("applicationsRequest") ApplicationsListRequestDto applicationsListRequestDto) {
         try {
             setSelectOptionsModelAttributes(model, locale);
             setCompetencesModelAttribute(model);
 
-            ApplicationsResponseDto response = applicationsService.getApplicationsSearchResults(applicationsRequestDto);
+            ApplicationsListResponseDto response = applicationsListService.getApplicationsSearchResults(applicationsListRequestDto);
             model.addAttribute("applicationsResults", response);
 
             return "recruiter/applications";
@@ -106,21 +106,21 @@ public class ApplicationsController {
             messageSource.getMessage("recruiter.applications.time", null, locale)
         };
 
-        SearchOption[] searchOptions = new SearchOption[searchOptionsValue.length];
-        for (int i = 0; i < searchOptions.length; i++) {
-            SearchOption searchOption = new SearchOption();
+        SearchOptionWrapper[] searchOptionWrappers = new SearchOptionWrapper[searchOptionsValue.length];
+        for (int i = 0; i < searchOptionWrappers.length; i++) {
+            SearchOptionWrapper searchOptionWrapper = new SearchOptionWrapper();
 
-            searchOption.setValue(searchOptionsValue[i]);
-            searchOption.setText(searchOptionsText[i]);
+            searchOptionWrapper.setValue(searchOptionsValue[i]);
+            searchOptionWrapper.setText(searchOptionsText[i]);
 
-            searchOptions[i] = searchOption;
+            searchOptionWrappers[i] = searchOptionWrapper;
         }
 
-        model.addAttribute("applicationsSearchOptions", searchOptions);
+        model.addAttribute("applicationsSearchOptions", searchOptionWrappers);
     }
 
     private void setCompetencesModelAttribute(Model model) {
-        List<Competence> competences = applicationsService.getCompetences();
+        List<Competence> competences = applicationsListService.getCompetences();
         model.addAttribute("competences", competences);
     }
 

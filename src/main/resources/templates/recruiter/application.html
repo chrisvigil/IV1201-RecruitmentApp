@@ -48,12 +48,12 @@
                 <form th:action="@{/recruiter/application(applicationId=${applicationData.application.id})}" th:object="${applicationRequest}" method="post">
                     <div class="mb-3">
                         <label class="form-label"><h5 th:text="#{recruiter.application.status}">Status</h5></label>
-                        <p class="fw-light" th:text="#{recruiter.application.current} + ': ' + ${applicationData.status.text}">Current status</p>
+                        <p class="fw-light" th:text="#{recruiter.application.current} + ': ' + ${applicationData.statusWrapper.text}">Current statusWrapper</p>
                         <select id="status" name="status" class="form-select">
                             <option th:each="option: ${statusOptions}"
                                     th:value="${option.value}"
                                     th:text="${option.text}"
-                                    th:selected="${applicationData.status.value.toString().equals(option.value.toString())}">
+                                    th:selected="${applicationData.statusWrapper.value.toString().equals(option.value.toString())}">
                             </option>
                         </select>
                         <input type="hidden" th:value="${applicationData.application.version}" th:id="oldVersion" th:name="oldVersion">

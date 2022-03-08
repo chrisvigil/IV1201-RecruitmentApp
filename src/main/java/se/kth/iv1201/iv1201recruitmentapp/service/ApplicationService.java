@@ -1,10 +1,8 @@
 package se.kth.iv1201.iv1201recruitmentapp.service;
 
-import org.hibernate.annotations.OptimisticLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +15,6 @@ import se.kth.iv1201.iv1201recruitmentapp.repository.AvailabilityRepository;
 import se.kth.iv1201.iv1201recruitmentapp.repository.CompetenceLocalizationRepository;
 import se.kth.iv1201.iv1201recruitmentapp.repository.CompetenceProfileRepository;
 
-import javax.persistence.OptimisticLockException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -95,12 +92,12 @@ public class ApplicationService {
             competenceProfileWrapperList.add(competenceProfileWrapper);
         }
 
-        Status status = makeStatusFromString(application.getStatus(), locale);
+        StatusWrapper statusWrapper = makeStatusFromString(application.getStatus(), locale);
 
         response.setApplication(application);
         response.setAvailabilities(availabilities);
         response.setCompetenceProfileWrappers(competenceProfileWrapperList);
-        response.setStatus(status);
+        response.setStatusWrapper(statusWrapper);
 
         return response;
     }
@@ -136,23 +133,23 @@ public class ApplicationService {
         }
     }
 
-    private Status makeStatusFromString(String statusValue, Locale locale) {
-        Status status = new Status();
-        status.setValue(statusValue);
+    private StatusWrapper makeStatusFromString(String statusValue, Locale locale) {
+        StatusWrapper statusWrapper = new StatusWrapper();
+        statusWrapper.setValue(statusValue);
 
         Locale def = new Locale(environment.getProperty("default.language"));
 
-        if (status.getValue().equals(messageSource.getMessage("recruiter.application.option.accepted", null, def))) {
-            status.setText(messageSource.getMessage("recruiter.application.option.accepted", null, locale));
-        } else if (status.getValue().equals(messageSource.getMessage("recruiter.application.option.rejected", null, def))) {
-            status.setText(messageSource.getMessage("recruiter.application.option.rejected", null, locale));
-        } else if (status.getValue().equals(messageSource.getMessage("recruiter.application.option.unhandled", null, def))) {
-            status.setText(messageSource.getMessage("recruiter.application.option.unhandled", null, locale));
+        if (statusWrapper.getValue().equals(messageSource.getMessage("recruiter.application.option.accepted", null, def))) {
+            statusWrapper.setText(messageSource.getMessage("recruiter.application.option.accepted", null, locale));
+        } else if (statusWrapper.getValue().equals(messageSource.getMessage("recruiter.application.option.rejected", null, def))) {
+            statusWrapper.setText(messageSource.getMessage("recruiter.application.option.rejected", null, locale));
+        } else if (statusWrapper.getValue().equals(messageSource.getMessage("recruiter.application.option.unhandled", null, def))) {
+            statusWrapper.setText(messageSource.getMessage("recruiter.application.option.unhandled", null, locale));
         } else {
-            status.setText(statusValue);
+            statusWrapper.setText(statusValue);
         }
 
-        return status;
+        return statusWrapper;
     }
 
 }

@@ -1,12 +1,10 @@
 package se.kth.iv1201.iv1201recruitmentapp.controller.dto;
 
-import org.springframework.data.domain.Pageable;
-
 /**
  * The application search dto object representing
  * the search parameters.
  */
-public class ApplicationsRequestDto {
+public class ApplicationsListRequestDto {
     private String searchType;
     private String searchName;
     private String searchCompetence;

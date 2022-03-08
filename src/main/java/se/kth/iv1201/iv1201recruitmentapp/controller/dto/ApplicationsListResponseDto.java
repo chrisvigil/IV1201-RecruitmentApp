@@ -8,7 +8,7 @@ import java.util.List;
  * The application dto object containing the resulting
  * applications of a search.
  */
-public class ApplicationsResponseDto {
+public class ApplicationsListResponseDto {
     private List<Application> applications;
 
     public List<Application> getApplications() {

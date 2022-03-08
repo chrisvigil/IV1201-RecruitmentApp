@@ -7,8 +7,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationsRequestDto;
-import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationsResponseDto;
+import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationsListRequestDto;
+import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationsListResponseDto;
 import se.kth.iv1201.iv1201recruitmentapp.exception.ApplicationsNameSearchFormatException;
 import se.kth.iv1201.iv1201recruitmentapp.exception.ApplicationsTimeSearchFormatException;
 import se.kth.iv1201.iv1201recruitmentapp.model.Application;
@@ -29,7 +29,7 @@ import java.util.Locale;
  */
 @Service
 @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
-public class ApplicationsService {
+public class ApplicationsListService {
 
     @Autowired
     private ApplicationRepository applicationRepository;
@@ -81,20 +81,20 @@ public class ApplicationsService {
      * the corresponding database accesses to create and
      * return an applications response dto.
      *
-     * @param applicationsRequestDto The applications request dto.
+     * @param applicationsListRequestDto The applications request dto.
      * @return The applications response dto.
      * @throws ApplicationsNameSearchFormatException If the name was formatted incorrectly.
      * @throws ApplicationsTimeSearchFormatException If the time was formatted incorrectly.
      */
-    public ApplicationsResponseDto getApplicationsSearchResults(ApplicationsRequestDto applicationsRequestDto)
+    public ApplicationsListResponseDto getApplicationsSearchResults(ApplicationsListRequestDto applicationsListRequestDto)
             throws ApplicationsNameSearchFormatException, ApplicationsTimeSearchFormatException {
 
-        ApplicationsResponseDto response = new ApplicationsResponseDto();
+        ApplicationsListResponseDto response = new ApplicationsListResponseDto();
 
-        String searchType = applicationsRequestDto.getSearchType();
-        String searchName = applicationsRequestDto.getSearchName();
-        String searchCompetence = applicationsRequestDto.getSearchCompetence();
-        String searchTime = applicationsRequestDto.getSearchTime();
+        String searchType = applicationsListRequestDto.getSearchType();
+        String searchName = applicationsListRequestDto.getSearchName();
+        String searchCompetence = applicationsListRequestDto.getSearchCompetence();
+        String searchTime = applicationsListRequestDto.getSearchTime();
 
         List<Application> results;
 

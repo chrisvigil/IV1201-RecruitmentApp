@@ -3,7 +3,7 @@ package se.kth.iv1201.iv1201recruitmentapp.model;
 /**
  * Class to represent search options.
  */
-public class SearchOption {
+public class SearchOptionWrapper {
     private String value;
     private String text;
 
