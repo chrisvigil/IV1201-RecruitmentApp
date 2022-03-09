@@ -8,8 +8,9 @@ public class ApplicationChangeLoggingEvent {
 
 
     /**
-     * TODO comment
-     * @param applicationId
+     * Constructor for the logging event
+     *
+     * @param applicationId the id of the changed application
      */
     public ApplicationChangeLoggingEvent(int applicationId) {
         this.applicationId = applicationId;

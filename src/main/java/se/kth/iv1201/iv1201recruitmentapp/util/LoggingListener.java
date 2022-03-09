@@ -9,7 +9,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 /**
- * TODO comment
+ * Class with event listeners used to do logging when relevant logging events are published from methods
+ * that needs information logged.
  */
 @Component
 public class LoggingListener {
@@ -17,12 +18,21 @@ public class LoggingListener {
     Logger passwordResetLogger = LoggerFactory.getLogger("Password-reset");
     Logger applicationChangeLogger = LoggerFactory.getLogger("application-change");
 
+    /**
+     * Listens for registration logging events published when a new user is registered.
+     * @param event logging event
+     */
     @EventListener
     public void onRegistrationEvent(RegistrationLoggingEvent event) {
         String username = event.getUsername();
         registrationLogger.info("User: " + username + " has registered.");
     }
 
+    /**
+     * Listens for reset password logging events published when a password reset request are requested or the password
+     * are changed based on the token from an earlier request.
+     * @param event password reset event
+     */
     @EventListener
     public void onResetPasswordEvent(ResetPasswordLoggingEvent event) {
         ResetPasswordLoggingEvent.ResetPasswordLoggingEnum type = event.getType();
@@ -40,9 +50,13 @@ public class LoggingListener {
 
     }
 
+    /**
+     * Listens for changes made to an application events published when a recruiter changes the status on an application.
+     * @param event application change event
+     */
     @EventListener
     public void onApplicationChangeLogger(ApplicationChangeLoggingEvent event) {
-        String loggingString ="Application: " + event.getApplicationId() + " was changed to: " + event.getStatus();
+        String loggingString ="Application: " + event.getApplicationId() + " was changed";
         String currenUser = getCurrentUserName();
         if (currenUser != null) {
             loggingString = loggingString + " by recruiter: " + currenUser;

@@ -11,11 +11,21 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * TODO comment
+ * Custom Logout handler so that custom code can be run when a user successfully logs out.
  */
 public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
     private Logger logger = LoggerFactory.getLogger(CustomLogoutSuccessHandler.class);
 
+    /**
+     * Should never be called from any other method. This method is only meant to be used by spring security when a logout
+     * succeeds.
+     *
+     * @param request
+     * @param response
+     * @param authentication
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException, ServletException {
