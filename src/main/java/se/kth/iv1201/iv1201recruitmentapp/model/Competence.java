@@ -5,29 +5,29 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * The role object model as represented by the
+ * The competence object model as represented by the
  * corresponding database table.
  */
 @Entity
-@Table(name = "role")
-public class Role {
+@Table(name = "competence")
+public class Competence {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "role_id", nullable = false)
+    @Column(name = "competence_id", nullable = false)
     private Integer id;
 
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "role")
-    private Set<Person> people = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "competence")
+    private Set<CompetenceProfile> competenceProfiles = new LinkedHashSet<>();
 
-    public Set<Person> getPeople() {
-        return people;
+    public Set<CompetenceProfile> getCompetenceProfiles() {
+        return competenceProfiles;
     }
 
-    public void setPeople(Set<Person> people) {
-        this.people = people;
+    public void setCompetenceProfiles(Set<CompetenceProfile> competenceProfiles) {
+        this.competenceProfiles = competenceProfiles;
     }
 
     public String getName() {
