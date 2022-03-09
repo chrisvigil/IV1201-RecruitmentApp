@@ -1,13 +1,14 @@
 package se.kth.iv1201.iv1201recruitmentapp.exception;
 
 /**
- * TODO
+ * Error class when the selected application no longer exists.
  */
 public class ApplicationNonexistentException extends RuntimeException {
 
     /**
-     * TODO
-     * @param message
+     * Constructor for application nonexistent exception.
+     *
+     * @param message The message to be sent.
      */
     public ApplicationNonexistentException(String message) {
         super(message);
