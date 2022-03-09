@@ -1,6 +1,8 @@
 package se.kth.iv1201.iv1201recruitmentapp.model;
 
 import javax.persistence.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * The person object model as represented by the
@@ -39,6 +41,39 @@ public class Person {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reset_password_token_id")
     private ResetPasswordToken resetPasswordToken;
+
+    @OneToMany(mappedBy = "person")
+    private Set<Availability> availabilities = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "person")
+    private Set<Application> applications = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "person")
+    private Set<CompetenceProfile> competenceProfiles = new LinkedHashSet<>();
+
+    public Set<CompetenceProfile> getCompetenceProfiles() {
+        return competenceProfiles;
+    }
+
+    public void setCompetenceProfiles(Set<CompetenceProfile> competenceProfiles) {
+        this.competenceProfiles = competenceProfiles;
+    }
+
+    public Set<Application> getApplications() {
+        return applications;
+    }
+
+    public void setApplications(Set<Application> applications) {
+        this.applications = applications;
+    }
+
+    public Set<Availability> getAvailabilities() {
+        return availabilities;
+    }
+
+    public void setAvailabilities(Set<Availability> availabilities) {
+        this.availabilities = availabilities;
+    }
 
     public ResetPasswordToken getResetPasswordToken() {
         return resetPasswordToken;
