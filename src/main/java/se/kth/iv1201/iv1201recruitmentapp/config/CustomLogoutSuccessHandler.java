@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * TODO
+ * TODO comment
  */
 public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
     private Logger logger = LoggerFactory.getLogger(CustomLogoutSuccessHandler.class);

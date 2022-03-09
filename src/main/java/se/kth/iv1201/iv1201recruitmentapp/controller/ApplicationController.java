@@ -1,6 +1,7 @@
 package se.kth.iv1201.iv1201recruitmentapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,7 @@ import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ApplicationResponseDto;
 import se.kth.iv1201.iv1201recruitmentapp.exception.ApplicationNonexistentException;
 import se.kth.iv1201.iv1201recruitmentapp.model.StatusWrapper;
 import se.kth.iv1201.iv1201recruitmentapp.service.ApplicationService;
+import se.kth.iv1201.iv1201recruitmentapp.util.ApplicationChangeLoggingEvent;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -30,6 +32,9 @@ public class ApplicationController {
 
     @Autowired
     private Environment environment;
+
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     /**
      * Creates an application request dto for the current
@@ -98,7 +103,7 @@ public class ApplicationController {
         setApplicationData(model, locale, applicationId.get());
 
         if (success) {
-            // TODO logging
+            publisher.publishEvent(new ApplicationChangeLoggingEvent(applicationId.get()));
         }
         else {
             model.addAttribute("updateError", true);

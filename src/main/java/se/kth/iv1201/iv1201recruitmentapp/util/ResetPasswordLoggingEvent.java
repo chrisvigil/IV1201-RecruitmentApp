@@ -1,4 +1,4 @@
-package se.kth.iv1201.iv1201recruitmentapp.Util;
+package se.kth.iv1201.iv1201recruitmentapp.util;
 
 /**
  * Class used for events concerning logging of password reset requests

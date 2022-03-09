@@ -1,4 +1,4 @@
-package se.kth.iv1201.iv1201recruitmentapp.Util;
+package se.kth.iv1201.iv1201recruitmentapp.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

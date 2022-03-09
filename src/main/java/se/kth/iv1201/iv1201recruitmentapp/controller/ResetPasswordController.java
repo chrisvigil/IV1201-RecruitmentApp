@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import se.kth.iv1201.iv1201recruitmentapp.Util.ResetPasswordLoggingEvent;
+import se.kth.iv1201.iv1201recruitmentapp.util.ResetPasswordLoggingEvent;
 import se.kth.iv1201.iv1201recruitmentapp.controller.dto.ChangePasswordDto;
 import se.kth.iv1201.iv1201recruitmentapp.service.EmailService;
 import se.kth.iv1201.iv1201recruitmentapp.service.SecurityUserDetailService;
