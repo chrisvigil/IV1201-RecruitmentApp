@@ -19,6 +19,9 @@
                             Home
                         </a>
                     </li>
+                    <li th:if="${#authorization.expression('hasAuthority(''recruiter'')')}">
+                        <a class="nav-link" href="/recruiter/applications" th:href="@{/recruiter/applications}" th:text="#{header.applications}">Applications</a>
+                    </li>
                 </ul>
             </div>
             <div class="nav navbar-right">
