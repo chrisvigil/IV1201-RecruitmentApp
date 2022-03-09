@@ -57,15 +57,12 @@ public class UserRegistrationController {
      */
     @PostMapping
     public String registerUserAccount(@ModelAttribute("user") @Valid UserRegistrationDto userDto, BindingResult result){
-        if (result.hasErrors())
+        if (result.hasErrors()) {
             return "registration";
-        try {
-            userService.createUser(userDto);
-            publisher.publishEvent(new RegistrationLoggingEvent(userDto.getUsername()));
-        return "success";
-        } catch (Exception ex) {
-            return "redirect:registration?regError"; //TODO handle error correctly
         }
+        userService.createUser(userDto);
+        publisher.publishEvent(new RegistrationLoggingEvent(userDto.getUsername()));
+        return "success";
     }
 
 }
