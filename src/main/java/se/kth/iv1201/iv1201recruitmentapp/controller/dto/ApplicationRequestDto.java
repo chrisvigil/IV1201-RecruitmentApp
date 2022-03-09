@@ -1,7 +1,7 @@
 package se.kth.iv1201.iv1201recruitmentapp.controller.dto;
 
 /**
- * The application requst dto object representing
+ * The application request dto object representing
  * the status of an application.
  */
 public class ApplicationRequestDto {
