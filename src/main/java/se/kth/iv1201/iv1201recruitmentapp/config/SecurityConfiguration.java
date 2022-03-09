@@ -53,6 +53,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                             "/img/**",
                             "/webjars/**",
                             "/error/**",
+                            "/resetPassword",
+                            "/changePassword",
                             "/login**").permitAll()
                     .anyRequest().authenticated()
                 .and()

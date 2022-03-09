@@ -36,11 +36,10 @@ public class UserRegistrationController {
     /**
      * Get request for the registration page.
      *
-     * @param model Model object used by the registration page.
      * @return The registration page url.
      */
     @GetMapping
-    public String showRegistrationForm(Model model){
+    public String showRegistrationForm(){
         return "registration";
     }
 
@@ -48,6 +47,7 @@ public class UserRegistrationController {
      * Post request for the registration page.
      *
      * @param userDto User form backing object used by the registration page.
+     * @param result Contains the userDto validation results
      * @return If successful returns success page, otherwise
      *          the registration page is returned with validation errors.
      */

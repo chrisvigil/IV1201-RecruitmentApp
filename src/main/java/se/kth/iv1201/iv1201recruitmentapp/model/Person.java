@@ -38,6 +38,10 @@ public class Person {
     @Column(name = "username")
     private String username;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reset_password_token_id")
+    private ResetPasswordToken resetPasswordToken;
+
     @OneToMany(mappedBy = "person")
     private Set<Availability> availabilities = new LinkedHashSet<>();
 
@@ -69,6 +73,14 @@ public class Person {
 
     public void setAvailabilities(Set<Availability> availabilities) {
         this.availabilities = availabilities;
+    }
+
+    public ResetPasswordToken getResetPasswordToken() {
+        return resetPasswordToken;
+    }
+
+    public void setResetPasswordToken(ResetPasswordToken resetPasswordToken) {
+        this.resetPasswordToken = resetPasswordToken;
     }
 
     public String getUsername() {
