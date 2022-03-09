@@ -10,9 +10,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class EmailService {
+    /*
     @Autowired
     private JavaMailSender mailSender;
-
+*/
     /**
      * Sends an email
      * @param to the email address of the recipient.
