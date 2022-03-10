@@ -59,12 +59,18 @@ public class ApplicationController {
      * @return The recruiter application page.
      */
     @GetMapping()
-    public String showApplication(Model model, Locale locale, @RequestParam("applicationId") Optional<Integer> applicationId) {
-        if (applicationId.isEmpty())
-            return "redirect:/recruiter/applications";
+    public String showApplication(Model model, Locale locale, @RequestParam("applicationId") Optional<String> applicationId) {
+        if (!isValidApplicationId(applicationId))
+            return "redirect:/error/404";
 
         setStatusOptions(model, locale);
-        setApplicationData(model, locale, applicationId.get());
+
+        try {
+            setApplicationData(model, locale, Integer.parseInt(applicationId.get()));
+        }
+        catch (ApplicationNonexistentException e) {
+            return "redirect:/error/404";
+        }
 
         return "recruiter/application";
     }
@@ -85,25 +91,31 @@ public class ApplicationController {
     @PostMapping()
     public String updateApplication(Model model,
                                     Locale locale,
-                                    @RequestParam("applicationId") Optional<Integer> applicationId,
+                                    @RequestParam("applicationId") Optional<String> applicationId,
                                     @ModelAttribute("applicationRequest") ApplicationRequestDto applicationRequestDto) {
 
-        if (applicationId.isEmpty())
-            return "redirect:/recruiter/applications";
+        if (!isValidApplicationId(applicationId))
+            return "redirect:/error/404";
 
         boolean success = false;
         try {
-            success = applicationService.updateApplicationStatus(applicationId.get(), applicationRequestDto);
+            success = applicationService.updateApplicationStatus(Integer.parseInt(applicationId.get()), applicationRequestDto);
         }
         catch (ApplicationNonexistentException e) {
             return "redirect:/recruiter/applications?applicationNonexistent";
         }
 
         setStatusOptions(model, locale);
-        setApplicationData(model, locale, applicationId.get());
+
+        try {
+            setApplicationData(model, locale, Integer.parseInt(applicationId.get()));
+        }
+        catch (ApplicationNonexistentException e) {
+            return "redirect:/error/404";
+        }
 
         if (success) {
-            publisher.publishEvent(new ApplicationChangeLoggingEvent(applicationId.get()));
+            publisher.publishEvent(new ApplicationChangeLoggingEvent(Integer.parseInt(applicationId.get())));
         }
         else {
             model.addAttribute("updateError", true);
@@ -114,6 +126,9 @@ public class ApplicationController {
 
     private void setApplicationData(Model model, Locale locale, int applicationId) {
         ApplicationResponseDto response = applicationService.getApplicationData(applicationId, locale);
+        if (response == null) {
+            throw new ApplicationNonexistentException("The application could not be found");
+        }
         model.addAttribute("applicationData", response);
     }
 
@@ -143,6 +158,19 @@ public class ApplicationController {
         }
 
         model.addAttribute("statusOptions", statusWrapperOptions);
+    }
+
+    private boolean isValidApplicationId(Optional<String> applicationId) {
+        if (applicationId.isEmpty()) {
+            return false;
+        }
+        try {
+            Integer.parseInt(applicationId.get());
+        }
+        catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
     }
 
 }
