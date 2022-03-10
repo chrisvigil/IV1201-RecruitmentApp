@@ -23,4 +23,36 @@ The following environment variables must be set to establish communication with 
 * `JDBC_DATABASE_USERNAME`
 * `JDBC_DATABASE_PASSWORD`
 
-## Further development
+### General development pattern
+#### resources
+* View
+
+#### java
+* Controller
+* Model
+* Service
+* Repository
+
+#### Resource Bundle
+* Localization
+
+### Further development
+#### Reset password email
+text here
+
+#### Error handling
+text here
+
+#### Logging
+text here
+
+#### Custom security handlers
+text here
+
+#### Application status changes
+localize database or
+how to hard code
+
+#### Application search options
+include somewhere or
+how to hard code
