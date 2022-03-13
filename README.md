@@ -53,13 +53,13 @@ When adding new messages to the *messages.properties*, file validation error mes
 Also be aware that the application expects the *messages.properties* files to be ISO-8859-1 encoded. Editing the files using GitHub's web interface (for example when resolving merge conflicts) will currently change the encoding of the file without warning. For this reason **ONLY** edit these files in your IDE. 
 
 #### Error handling
-text here
+Errors can be handled in three ways. The first is to handle it in the calling method as normal. The second is to declare a error handling method in the controller class where the instruction started. This is done by using the `ExceptionHandler` tag on that method. For the last version add `ExceptionHandler` methods to the `GlobalExceptionHandler` controller class. Here all exceptions are processed that can't or shouldn't be handled in any other place.
 
 #### Logging
-text here
+Logging is done using the standard logger in spring boot. All logging messages are printed to standard out and all stack traces are printed to standard err. To get the log messages to print to a file the `logging.file` or `logging.path` needs to be declared in `application.properties`. Log groups can be defined on `application.properties` to set different logging behavior for deifferent groups.
 
 #### Custom security handlers
-text here
+Custom handlers has been implemented for succesful logout and for authentication failure so that some logging and error handling can be done. If other functionallity is needed for those events the relevant handler needs to be expanded or replaced if the current functionality is no longer needed.
 
 #### Application status changes
 Due to the lack of a 'status' table in the database some functionality is hard coded. 
